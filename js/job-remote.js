@@ -21,11 +21,6 @@ const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin
 // var makeAnnotations = d3.annotation().annotations(annotations);
 // ==============================================================================================================
 
-
-
-
-// ========================================== LINE CHART DEFINITION ==============================================
-const data_EX = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EX");
 const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE");
 const data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI");
 const data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN");
@@ -33,48 +28,32 @@ const data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experienc
 const grouped_data_SE =  Array.from(d3.group(data_SE, d => d.work_year),
 ([key, values]) => ({
     work_year: key,
-    mean_salary: d3.mean(values, d => d.salary_in_usd)
+    remote: d3.mean(values, d => d.remote_ratio)
 }));
-
 const grouped_data_MI =  Array.from(d3.group(data_MI, d => d.work_year),
 ([key, values]) => ({
     work_year: key,
-    mean_salary: d3.mean(values, d => d.salary_in_usd)
+    remote: d3.mean(values, d => d.remote_ratio)
 }));
 
 const grouped_data_EN =  Array.from(d3.group(data_EN, d => d.work_year),
 ([key, values]) => ({
     work_year: key,
-    mean_salary: d3.mean(values, d => d.salary_in_usd)
+    remote: d3.mean(values, d => d.remote_ratio)
 }));
-
-const grouped_data_EX =  Array.from(d3.group(data_EX, d => d.work_year),
-([key, values]) => ({
-    work_year: key,
-    mean_salary: d3.mean(values, d => d.salary_in_usd)
-}));
-
-grouped_data_EX.sort((a,b) => d3.ascending(a.work_year, b.work_year));
 grouped_data_SE.sort((a,b) => d3.ascending(a.work_year, b.work_year));
 grouped_data_MI.sort((a,b) => d3.ascending(a.work_year, b.work_year));
 grouped_data_EN.sort((a,b) => d3.ascending(a.work_year, b.work_year));
 
-// const max_arr = Math.max(d3.max(grouped_data, d=>d.mean_salary), d3.max(grouped_data_2, d=>d.mean_salary))
-const xs = d3.scaleLinear().domain(d3.extent(grouped_data_SE, d=>d.work_year)).range([0,width]);
-const ys = d3.scaleLinear().domain([0, d3.max(grouped_data_SE, d=>d.mean_salary)]).range([height, 0]);
-    
-const line = d3.line()
-    .x(function(d) {return xs(d.work_year);})
-    .y(function(d) {return ys(d.mean_salary);})
-    .curve(d3.curveMonotoneX);
+const xs = d3.scaleBand().domain(grouped_data_EN.map(d=>d.work_year)).range([0,width]).padding(0.5);
+const ys = d3.scaleLinear().domain([0, d3.max(grouped_data_EN, d=>d.remote)]).range([height, 0]);
 
-// ===============================================================================================================
 
-console.log("here1", grouped_data_EN)
-console.log("here2", grouped_data_MI)
-console.log("here3", grouped_data_SE)
-console.log("here4", grouped_data_EX)
+// ================================================================================================================
 
+console.log("EN", grouped_data_EN)
+console.log("MI", grouped_data_MI)
+console.log("SE", grouped_data_SE)
 // ============================================ CANVAS SETTINGS ====================================================
 d3.select("svg")
     .attr("width", width + 2*margin)
@@ -84,13 +63,16 @@ d3.select("svg")
     .attr("transform", "translate("+margin+","+margin+")")
     //  .call(makeAnnotations)
 
-    .append('path')
-    .datum(grouped_data_EN)
-    .attr("class", "line") 
-    .attr('fill', 'none')
-    .attr('stroke', 'red')
-    .attr('stroke-width', 1.5)
-    .attr('d', line);
+    .selectAll('rect')
+    .data(grouped_data_EN)
+    .enter()
+    .append('rect')
+    .attr('x', function(d) {return xs(d.work_year);})
+    .attr('y', function(d) {return ys(d.remote);})
+    .attr('width', 20)
+    .attr('height', function(d) {return height - ys(d.remote);})
+    .attr('fill', 'red');
+
 
 d3.select("svg")
     .attr("width", width + 2*margin)
@@ -98,41 +80,38 @@ d3.select("svg")
     
     .append("g")
     .attr("transform", "translate("+margin+","+margin+")")
-    .append('path')
-    .datum(grouped_data_MI)
-    .attr("class", "line") 
-    .attr('fill', 'none')
-    .attr('stroke', 'green')
-    .attr('stroke-width', 1.5)
-    .attr('d', line);
+    //  .call(makeAnnotations)
+
+    .selectAll('rect')
+    .data(grouped_data_MI)
+    .enter()
+    .append('rect')
+    .attr('x', function(d) {return xs(d.work_year);})
+    .attr('y', function(d) {return ys(d.remote);})
+    .attr('width', 20)
+    .attr('height', function(d) {return height - ys(d.remote);})
+    .attr("transform", "translate("+20+", 0)")
+    .attr('fill', 'green');
+
 
 d3.select("svg")
     .attr("width", width + 2*margin)
     .attr("height", height + 2*margin)
     
     .append("g")
-    .attr("transform", "translate("+margin+","+margin+")")
-    .append('path')
-    .datum(grouped_data_SE)
-    .attr("class", "line") 
-    .attr('fill', 'none')
-    .attr('stroke', 'blue')
-    .attr('stroke-width', 1.5)
-    .attr('d', line);
+    .attr("transform", "translate("+margin+",0)")
+    //  .call(makeAnnotations)
 
-// d3.select("svg")
-//     .attr("width", width + 2*margin)
-//     .attr("height", height + 2*margin)
-    
-//     .append("g")
-//     .attr("transform", "translate("+margin+","+margin+")")
-//     .append('path')
-//     .datum(grouped_data_EX)
-//     .attr("class", "line") 
-//     .attr('fill', 'none')
-//     .attr('stroke', 'black')
-//     .attr('stroke-width', 1.5)
-//     .attr('d', line);
+    .selectAll('rect')
+    .data(grouped_data_SE)
+    .enter()
+    .append('rect')
+    .attr('x', function(d) {return xs(d.work_year);})
+    .attr('y', function(d) {return ys(d.remote);})
+    .attr('width', 20)
+    .attr('height', function(d) {return height - ys(d.remote);})
+    .attr("transform", "translate("+40+", "+100+")")
+    .attr('fill', 'steelblue');
 // ================== AXES ==================
 d3.select("svg")
     .append("g")
@@ -142,7 +121,11 @@ d3.select("svg")
 d3.select("svg")
     .append("g")
     .attr("transform", "translate("+margin+", "+(height+margin)+")")
-    .call(d3.axisBottom(xs).tickValues([2020,2021,2022,2023]).tickFormat(d3.format("d")));
+    .call(d3.axisBottom(xs))
+    .selectAll('text') 
+    .attr("transform", "translate(10,20)rotate(25)")
+    .attr('fill', 'teal')
+
 // ============================================
 
 
