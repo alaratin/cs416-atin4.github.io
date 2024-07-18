@@ -8,20 +8,16 @@ var margin = 100;
 const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin4.github.io/main/data/ds_salaries.csv");
 // ============================================================================================================
 
-// =============================================== ANNOTATIONS ================================================
-// Features of the annotation
-// var annotations = data.map(d => ({
-//     note: { label: `(${d.AverageCityMPG}, ${d.AverageHighwayMPG})` },
-//     x: xs(d.AverageCityMPG),
-//     y: ys(d.AverageHighwayMPG),
-//     dx: 0.5,
-//     dy: 0.5
-// }));
-
-// var makeAnnotations = d3.annotation().annotations(annotations);
-// ==============================================================================================================
 
 
+// var annotations = [  ]
+
+// var makeAnnotations = d3.annotation()
+// .accessors({
+//     x: function(d){return x(d.x)+margin.left},
+//     y: function(d){return y0(d.y)+margin.top}
+// })
+// .annotations(annotations)
 
 
 // ========================================== LINE CHART DEFINITION ==============================================
@@ -75,6 +71,49 @@ console.log("here2", grouped_data_MI)
 console.log("here3", grouped_data_SE)
 console.log("here4", grouped_data_EX)
 
+
+// =============================================== ANNOTATIONS ================================================
+// Features of the annotation ----------- SENIOR LEVEL -------------
+const annotations = [
+    {
+        note: {
+            label: "Lowest salary with $87,071",
+            title: "Senior Level",
+            wrap: 100
+        },
+        type:d3.annotationCalloutRect,
+        x: xs('2021'),
+        y: ys(87000),
+        radius: 10,
+        raiduspadding: 5,
+        dy: -100,
+        dx: 0
+    },
+    {
+        note: { 
+          title: "Equalization Period", 
+          lineType: "none", 
+          align: "middle",
+          wrap: 150
+        },
+        subject: {
+          height: height - margin.top - margin.bottom,
+          width: width
+        },
+        type: d3.annotationCalloutRect,
+        y: margin.top,
+        disable: ["connector"], // doesn't draw the connector
+        //can pass "subject" "note" and "connector" as valid options
+      //   dx: (xs(new Date("6/1/2009")) - xs(new Date("12/1/2007")))/2,
+      //   data: { x: "12/1/2007"}
+      }
+];
+// ----------------------------------------------------------------------
+const makeAnnotations = d3.annotation()
+            .annotations(annotations);
+
+// ==============================================================================================================
+
 // ============================================ CANVAS SETTINGS ====================================================
 d3.select("svg")
     .attr("width", width + 2*margin)
@@ -82,7 +121,7 @@ d3.select("svg")
     
     .append("g")
     .attr("transform", "translate("+margin+","+margin+")")
-    //  .call(makeAnnotations)
+    .call(makeAnnotations)
 
     .append('path')
     .datum(grouped_data_EN)

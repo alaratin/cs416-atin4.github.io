@@ -49,6 +49,48 @@ const xs = d3.scaleBand().domain(grouped_data_EN.map(d=>d.work_year)).range([0,w
 const ys = d3.scaleLinear().domain([0, d3.max(grouped_data_EN, d=>d.remote)]).range([height, 0]);
 
 
+// =============================================== ANNOTATIONS ================================================
+// Features of the annotation ----------- SENIOR LEVEL -------------
+const annotations = [
+    // {
+    //     note: {
+    //         label: "Lowest salary with $87,071",
+    //         title: "Senior Level",
+    //         wrap: 100
+    //     },
+    //     type:d3.annotationCalloutCircle,
+    //     x: xs('2021'),
+    //     y: ys(70),
+    //     radius: 10,
+    //     raiduspadding: 20,
+    //     dy: -20,
+    //     dx: 10
+    // },
+    
+    {
+        note: { 
+          title: "Equalization Period", 
+          lineType: "none", 
+          align: "middle",
+          wrap: 150
+        },
+        subject: {
+          height: height - margin.top - margin.bottom,
+          width: xs('2022')
+        },
+        type: d3.annotationCalloutRect,
+        y: margin.top,
+        disable: ["connector"], // doesn't draw the connector
+        //can pass "subject" "note" and "connector" as valid options
+      //   dx: (xs(new Date("6/1/2009")) - xs(new Date("12/1/2007")))/2,
+      //   data: { x: "12/1/2007"}
+      }
+];
+// ----------------------------------------------------------------------
+const makeAnnotations = d3.annotation()
+            .annotations(annotations);
+
+// ==============================================================================================================
 // ================================================================================================================
 
 console.log("EN", grouped_data_EN)
@@ -61,7 +103,7 @@ d3.select("svg")
     
     .append("g")
     .attr("transform", "translate("+margin+","+margin+")")
-    //  .call(makeAnnotations)
+     .call(makeAnnotations)
 
     .selectAll('rect')
     .data(grouped_data_EN)
