@@ -12,49 +12,125 @@ const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin
 
 // Define a projection
 const projection = d3.geoMercator()
-.scale(150)
-.translate([width / 2, height / 1.5]);
+                      .scale(150)
+                      .translate([width / 2, height / 1.5]);
+
 
 // Define a path generator
 const path = d3.geoPath()
-  .projection(projection);
+                .projection(projection);
 
 // Load TopoJSON data
-d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(topology => {
-  // Convert TopoJSON to GeoJSON
-  const geojson = topojson.feature(topology, topology.objects.countries);
+// d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(topology => {
+//   // Convert TopoJSON to GeoJSON
+//   const geojson = topojson.feature(topology, topology.objects.countries);
+// // )
 
 
+// ================================== EXTRACT DATA TO DISPLAY =======================================
+// @ Filter data for Data Scientists
+const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.work_year == '2022'); 
+// const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE" && d.work_year == '2022'); 
 
-const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE");    
-const grouped_data_SE =  Array.from(d3.group(data_SE, d => d.work_year),
-([key, values]) => ({
-    work_year: key,
-    mean_salary: d3.mean(values, d => d.salary_in_usd)
+
+const codeMap = {
+  "US": "United States of America",
+  "GB": "United Kingdom",
+  "ES": "Spain",
+  "IN": "India",
+  "CA": "Canada",
+  "IE": "Ireland",
+  "AE": "United Arab Emirates",
+  "PL": "Poland",
+  "DE": "Germany",
+  "GR": "Greece",
+  "JP": "Japan",
+  "DK": "Denmark",
+  "BE": "Belgium",
+  "FR": "France",
+  "NL": "Netherlands",
+  "JE": "Jersey",
+  "BR": "Brazil",
+  "NG": "Nigeria",
+  "IQ": "Iraq",
+  "RO": "Romania",
+  "DZ": "Algeria",
+  "PK": "Pakistan",
+  "CH": "China",
+  "HN": "Honduras",
+  "TN": "Tunisia",
+  "CZ": "Czechia",
+  "PL": "Poland",
+  "EE": "Estonia",
+  "SI": "Slovenia",
+  "PT": "Portugal",
+  "AU": "Australia",
+  "EG": "Egypt",
+  "AT": "Austria",
+  "TR": "Turkey",
+  "IT": "Italy",
+  "LV": "Latvia",
+  "KE": "Kenya",
+  "SG": "Singapore"
+};
+// const countryFullName = data.map(d => codeMap[d.company_location]);
+const countryFullName = data_SE.map(d => ({
+  company_location: codeMap[d.company_location]
 }));
 
-const countryData = new Map(data.map(d => [d.company_location, +d.frequency]));
 
-const colorScale = d3.scaleSequential(d3.interpolateBlues)
-.domain([0, d3.max(data, d => +d.frequency)]);
+// // console.log(countryFullName)
 
+// @ Group Data Scientists per year
+// const grouped_data_SE =  Array.from(d3.group(data_SE, d => d.company_location),
+// ([key, values]) => ({
+//     country_loc: key,
+//     country_cnt: values.length,
+//     years: Array.from(d3.group(values, d => d.work_year),
+//       ([year, year_val]) => ({
+//         year: year,
+//         year_cnt: year_val.length
+//       })
+//     )
 
-//   // Load your CSV data
-// const countryNames = data.map(d => d.company_location);
+// }));
+// const grouped_data_SE =  Array.from(d3.group(data_SE, d => countryFullName),
+const grouped_data_SE =  Array.from(d3.group(countryFullName, d => d.company_location),
+      ([key, values]) => ({
+          country_loc: key,
+          country_cnt: values.length
+      }));
 
-    // Draw the map
+console.log(grouped_data_SE)
+
+const color = d3.scaleSequential(d3.interpolateWarm)
+      .domain([0, d3.max(grouped_data_SE, d => d.country_cnt)]);
+
+const countryDataMap = new Map(grouped_data_SE.map(d => [d.country_loc, d.country_cnt]));
+
+d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(topology => {
+  const geojson = topojson.feature(topology, topology.objects.countries).features;
+
+// ============================================ CANVAS SETTINGS ====================================================
 d3.select("svg")
     .selectAll("path")
-        .data(geojson.features)
+        .data(geojson)
         .enter()
         .append("path")
         .attr("d", path)
-        .attr("class", "highlighted")
-        // .attr("class", d => countryData.includes(d.properties.name) ? "highlighted" : "country")
-        .attr('fill', d=> colorScale(countryData));
+        .attr("class", "country")
+        .style("fill", d => {
+          const count = countryDataMap.get(d.properties.name) || 0;
+          return count>0 ? color(count) : "#000";
+        });
+
+  d3.select('svg').selectAll(".country")
+  .append("title")
+  .text(d => {
+    const count = countryDataMap.get(d.properties.name) || 0;
+    return `${d.properties.name}: ${count} Data Scientist jobs in 2021`;
+  });
 });
-
-
 // // =============================================== ANNOTATIONS ================================================
 // // Features of the annotation ----------- SENIOR LEVEL -------------
 // const annotations = [
