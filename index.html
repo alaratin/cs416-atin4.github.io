@@ -11,61 +11,62 @@
         <script src='https://d3js.org/d3.v7.min.js'></script>
         <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
         <!-- <script src="js/d3-annotation.min.js"></script> -->
-     </head>
- 
+        <!-- <script type="module" src="js/library/topojson-client.js"></script> -->
+        <script src="https://unpkg.com/topojson-client@3"></script>     
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
+    </head>
 
      <body onload="init()">
         <header role = 'banner'>
             <div>
-                <h1> COVID-19 After Effect on Data Scientists </h1>
+                <h1> The Railroad of the Data Scientists: Journey from 2020 to 2023 </h1>
             </div>
-            <p> As data processing is significant in understanding and improving bussinesses, data scientists have become precious to
-                bussinesses in this new data-driven world. COVID-19 was unfortunate to all industries and despite having potential in 
-                converting tasks into remote positions, let's observe how data scientists salary got impacted thoughout the years of 2020
-                to 2023.
+            <p> Did you know there are in total of 685,051 movies listed in the IMDB website? However, the distribution of the 
+                number of the movies per years varies, sometimes minimally, sometimes drastically. The chart below demonstrates
+                the changes of the number of movies amongst the years. 
             </p>
 
             <p>
-                Note that user interaction opportunities are available as you pass through slides using the navigation panel.
+                Note that you can access further information regarding mean salaries per country solely for the data scientist positions
+                as you hover over the map. 
             </p>
+            </header>
+
+            <div>
+                <ul class='nav-items'>
+                    <a href="index.html" class="button">&laquo; Previous</a>
+                    <a href="page-2.html" class="button">Next &raquo;</a>
+                </ul>
+            </div>
+
+
+            <div>
+                <ul class='nav-items'>
+                    <a href="index.html" class="round-button">&#8249;</a>
+                    <a href="page-2.html" class="round-button">&#8250;</a>
+                </ul>
+            </div>
+
+            <style>
+                .country {
+                  fill: rgb(112, 97, 97);
+                  stroke: white;
+                }
+              </style>
+
+            <!-- <form id="filterForm">
+                <label for="year">Year:</label>
+                <input type="number" id="year" name="year">
+                <button type="submit">Render Map</button>
+            </form>  -->
+
+            <input type="text" id="year" value="2020">
+            <button id = 'updateMap' onclick="init()">Submit</button>
+            <!-- <button id = 'updateMap'>Submit</button> -->
+
+            <svg width=960 height=600 style="display: block; margin: auto"> </svg>
+            <script src="js/country/country.js"></script>
             
-            <!-- NEXT PAGE BUTTON -->
-             <div>
-                 <ul class='nav-items'>
-                     <!-- <a href="index.html" class="button">&laquo; Previous</a> -->
-                     <a href="page-2.html" class="button">Next &raquo;</a>
-                     <!-- <a href="index.html" class="round-button">&#8249;</a>
-                     <a href="page-2.html" class="round-button">&#8250;</a> -->
-                 </ul>
-             </div>
-
-
-             <div>
-                 <ul class='nav-items'>
-                     <!-- <a href="index.html" class="button">&laquo; Previous</a>
-                     <a href="page-2.html" class="button">Next &raquo;</a> -->
-                     <!-- <a href="index.html" class="round-button">&#8249;</a> -->
-                     <a href="page-2.html" class="round-button">&#8250;</a>
-                 </ul>
-             </div>
-
-
-            <!-- <svg width=300 height=300> </svg>
-            <script src="js/job-dist.js"></script> -->
-
-            <!-- <svg width=300 height=300 style="background-color: rgb(249, 253, 255); display: block; margin: auto"> </svg> -->
-            <svg width=300 height=300 style="display: block; margin: auto"> </svg>
-            <script src="js/job-dist-years.js"></script>
-
-            <!-- <svg width=300 height=300> </svg>
-            <script src="js/job-remote.js"></script> -->
-
-        </header>
-        <main role = 'main'>
-            <h2> Need </h2>
-           
-        </main>
-
-
+        </body>
 
 </html>

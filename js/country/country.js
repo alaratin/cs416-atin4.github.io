@@ -1,263 +1,202 @@
 // "use strict"
+
 async function init() {
-var height = 500;
-var width = 500;
-var margin = 100;
+  // @ Data Selection
+  const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin4.github.io/main/data/ds_salaries.csv");
+  var year = printYear()
+  var filtered_data = filterData(data, year)
+  displayData(filtered_data, year)
+}
 
-// =============================================== DATA SELECTION =============================================
-const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin4.github.io/main/data/ds_salaries.csv");
-// ============================================================================================================
+// ======================================= USER INPUT ==========================================================
 
-
-
-// Define a projection
-const projection = d3.geoMercator()
-                      .scale(150)
-                      .translate([width / 2, height / 1.5]);
-
-
-// Define a path generator
-const path = d3.geoPath()
-                .projection(projection);
-
-// Load TopoJSON data
-// d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(topology => {
-//   // Convert TopoJSON to GeoJSON
-//   const geojson = topojson.feature(topology, topology.objects.countries);
-// // )
+ function printYear() {
+  var selected_year = document.getElementById("year").value;
+  console.log(selected_year)
+  return selected_year
+}
+// ===============================================================================================================
 
 
-// ================================== EXTRACT DATA TO DISPLAY =======================================
-// @ Filter data for Data Scientists
-const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.work_year == '2022'); 
-// const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE" && d.work_year == '2022'); 
+// ======================================== EXTRACT DATA TO DISPLAY ==============================================
+function filterData(data, year){
+  console.log(year)
+  // @ Filter data for Data Scientists and year only
+  var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.work_year == year); 
+  return data_SE
+}
+// ===============================================================================================================
+
+// ====================================== MAP STYLING DEFINITION ================================================
+  function displayData(data_SE, year){
+    console.log(year)
+
+    const projection = d3.geoNaturalEarth1();
+
+    // @ Path generatator for the drawing
+    const path = d3.geoPath()
+                    .projection(projection);
+
+    // ======= NAME MAPPING ======== 
+    const codeMap = {
+      "AE": "United Arab Emirates",
+      "AL": "Albania",
+      "AM": "Armenia",
+      "AR": "Argentina",
+      "AS": "American Samoa",
+      "AT": "Austria",
+      "AU": "Australia",
+
+      "BA": "Bosnia and Herzegovina",
+      "BE": "Belgium",
+      "BO": "Bolivia",
+      "BR": "Brazil",
+      "BS": "Bahamas",
+
+      
+      "CA": "Canada",
+      "CF": "Central African Republic",
+      "CH": "Switzerland",
+      "CL": "Chile",
+      "CN": "China",
+      "CO": "Colombia",
+      "CR": "Costa Rica",
+      "CZ": "Czechia",
+
+      "DE": "Germany",
+      "DK": "Denmark",
+      "DZ": "Algeria",
+
+      "EE": "Estonia",
+      "EG": "Egypt",
+      "ES": "Spain",
 
 
-const codeMap = {
-  "US": "United States of America",
-  "GB": "United Kingdom",
-  "ES": "Spain",
-  "IN": "India",
-  "CA": "Canada",
-  "IE": "Ireland",
-  "AE": "United Arab Emirates",
-  "PL": "Poland",
-  "DE": "Germany",
-  "GR": "Greece",
-  "JP": "Japan",
-  "DK": "Denmark",
-  "BE": "Belgium",
-  "FR": "France",
-  "NL": "Netherlands",
-  "JE": "Jersey",
-  "BR": "Brazil",
-  "NG": "Nigeria",
-  "IQ": "Iraq",
-  "RO": "Romania",
-  "DZ": "Algeria",
-  "PK": "Pakistan",
-  "CH": "China",
-  "HN": "Honduras",
-  "TN": "Tunisia",
-  "CZ": "Czechia",
-  "PL": "Poland",
-  "EE": "Estonia",
-  "SI": "Slovenia",
-  "PT": "Portugal",
-  "AU": "Australia",
-  "EG": "Egypt",
-  "AT": "Austria",
-  "TR": "Turkey",
-  "IT": "Italy",
-  "LV": "Latvia",
-  "KE": "Kenya",
-  "SG": "Singapore"
-};
-// const countryFullName = data.map(d => codeMap[d.company_location]);
-const countryFullName = data_SE.map(d => ({
-  company_location: codeMap[d.company_location]
-}));
+      "FI": "Finland",
+      "FR": "France",
 
+      "GB": "United Kingdom",
+      "GH": "Ghana",
+      "GR": "Greece",
 
-// // console.log(countryFullName)
+      "HK": "Hong Kong",
+      "HN": "Honduras",
+      "HR": "Crotia",
+      "HU": "Hungary",
 
-// @ Group Data Scientists per year
-// const grouped_data_SE =  Array.from(d3.group(data_SE, d => d.company_location),
-// ([key, values]) => ({
-//     country_loc: key,
-//     country_cnt: values.length,
-//     years: Array.from(d3.group(values, d => d.work_year),
-//       ([year, year_val]) => ({
-//         year: year,
-//         year_cnt: year_val.length
-//       })
-//     )
+      "ID": "Indonesia",
+      "IE": "Ireland",
+      "IL": "Israel",
+      "IN": "India",
+      "IQ": "Iraq",
+      "IR": "Iran",
+      "IT": "Italy",
 
-// }));
-// const grouped_data_SE =  Array.from(d3.group(data_SE, d => countryFullName),
-const grouped_data_SE =  Array.from(d3.group(countryFullName, d => d.company_location),
-      ([key, values]) => ({
-          country_loc: key,
-          country_cnt: values.length
-      }));
+      // "JE": "Jersey",
+      "JP": "Japan",
 
-console.log(grouped_data_SE)
+      "KE": "Kenya",
 
+      "LT": "Lithuania",
+      "LU": "Luxembourg",
+      "LV": "Latvia",
+
+      "MA": "Morocco",
+      "MD": "Moldova",
+      "MK": "Macedonia",
+      "MT": "Malta",
+      "MX": "Mexico",
+      "MY": "Malaysia",
+
+      "NG": "Nigeria",
+      "NL": "Netherlands",
+      "NZ": "New Zealand",
+
+      "PK": "Pakistan",
+      "PL": "Poland",
+      "PR": "Puerto Rico",
+      "PT": "Portugal",
+
+      "RO": "Romania",
+      "RU": "Russia",
+
+      "SE": "Sweden",
+      "SG": "Singapore",
+      "SI": "Slovenia",
+      "SK": "Slovakia",
+
+      "TH": "Thailand",
+      "TR": "Turkey",
+      "UA": "Ukraine",
+      "US": "United States of America",
+      "VN": "Vietnam"
+
+    };
+    // =============================
+
+    const countryFullName = data_SE.map(d => ({
+      company_location: codeMap[d.company_location],
+      salary: d.salary_in_usd
+    }));
+
+    // console.log(countryFullName)
+// ===============================================================================================================
+
+// =========================================== GROUPING FOR DATA ===================================================
+  const grouped_data_SE =  Array.from(d3.group(countryFullName, d => d.company_location),
+        ([key, values]) => ({
+            country_loc: key,
+            mean_salary: d3.mean(values, d => d.salary)
+          }));
+
+  console.log(grouped_data_SE)
+// =================================================================================================================
+
+// ============================================== MAP COLORING =====================================================
 const color = d3.scaleSequential(d3.interpolateWarm)
-      .domain([0, d3.max(grouped_data_SE, d => d.country_cnt)]);
+      .domain([0, d3.max(grouped_data_SE, d => d.mean_salary)]);
 
-const countryDataMap = new Map(grouped_data_SE.map(d => [d.country_loc, d.country_cnt]));
+const countryDataMap = new Map(grouped_data_SE.map(d => [d.country_loc, d.mean_salary]));
+
+// ===========================================
+// @ Legend definition for salary allocations
+var legend = d3.legendColor()
+    .scale(color);
+// ===========================================
 
 d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(topology => {
   const geojson = topojson.feature(topology, topology.objects.countries).features;
-
+// =================================================================================================================
 // ============================================ CANVAS SETTINGS ====================================================
-d3.select("svg")
-    .selectAll("path")
-        .data(geojson)
-        .enter()
-        .append("path")
-        .attr("d", path)
-        .attr("class", "country")
-        .style("fill", d => {
-          const count = countryDataMap.get(d.properties.name) || 0;
-          return count>0 ? color(count) : "#000";
-        });
+// function update(data){
+  d3.select("svg")
+      .selectAll("path")
+          .data(geojson)
+          .enter()
+          .append("path")
+          .attr("d", path)
+          .attr("class", "country")
+          .style("fill", d => {
+            const salary = countryDataMap.get(d.properties.name) || 0;
+            return salary>0 ? color(salary) : "#000";
+          });
+  
+    d3.select('svg').selectAll(".country")
+    .append("title")
+    .text(d => {
+      const count = countryDataMap.get(d.properties.name) || 0;
+      return `Mean Salary for Data Scientist Job in ${d.properties.name}: $ ${count}`;
+    });
 
-  d3.select('svg').selectAll(".country")
-  .append("title")
-  .text(d => {
-    const count = countryDataMap.get(d.properties.name) || 0;
-    return `${d.properties.name}: ${count} Data Scientist jobs in 2021`;
-  });
+    d3.select('svg').append("g")
+    .attr("transform", "translate(10,10)")
+    .call(legend);
+
 });
-// // =============================================== ANNOTATIONS ================================================
-// // Features of the annotation ----------- SENIOR LEVEL -------------
-// const annotations = [
-//     // {
-//     //     note: {
-//     //         label: "Lowest salary with $87,071",
-//     //         title: "Senior Level",
-//     //         wrap: 100
-//     //     },
-//     //     type:d3.annotationCalloutCircle,
-//     //     x: xs('2021'),
-//     //     y: ys(70),
-//     //     radius: 10,
-//     //     raiduspadding: 20,
-//     //     dy: -20,
-//     //     dx: 10
-//     // },
-    
-//     {
-//         note: { 
-//           title: "Equalization Period", 
-//           lineType: "none", 
-//           align: "middle",
-//           wrap: 150
-//         },
-//         subject: {
-//           height: height - margin.top - margin.bottom,
-//           width: 100
-
-//         //   width: width - margin.top
-//         },
-//         type: d3.annotationCalloutRect,
-//         y: margin.top,
-//         x: xs(2021),
-//         disable: ["connector"], // doesn't draw the connector
-//         //can pass "subject" "note" and "connector" as valid options
-//       //   dx: (xs(new Date("6/1/2009")) - xs(new Date("12/1/2007")))/2,
-//       //   data: { x: "12/1/2007"}
-//       }
-// ];
-// // ----------------------------------------------------------------------
-// const makeAnnotations = d3.annotation()
-//             .annotations(annotations);
-
-// // ==============================================================================================================
-// // ================================================================================================================
-
-// console.log("EN", grouped_data_EN)
-// console.log("MI", grouped_data_MI)
-// console.log("SE", grouped_data_SE)
-// // ============================================ CANVAS SETTINGS ====================================================
-// d3.select("svg")
-//     .attr("width", width + 2*margin)
-//     .attr("height", height + 2*margin)
-    
-//     .append("g")
-//     .attr("transform", "translate("+margin+","+margin+")")
-//     //  .call(makeAnnota    tions)
-
-//     .selectAll('rect')
-//     .data(grouped_data_EN)
-//     .enter()
-//     .append('rect')
-//     .attr('x', function(d) {return xs(d.work_year);})
-//     .attr('y', function(d) {return ys(d.remote);})
-//     .attr('width', 20)
-//     .attr('height', function(d) {return height - ys(d.remote);})
-//     .attr('fill', 'red');
-
-
-// d3.select("svg")
-//     .attr("width", width + 2*margin)
-//     .attr("height", height + 2*margin)
-    
-//     .append("g")
-//     .attr("transform", "translate("+margin+","+margin+")")
-//     //  .call(makeAnnotations)
-
-//     .selectAll('rect')
-//     .data(grouped_data_MI)
-//     .enter()
-//     .append('rect')
-//     .attr('x', function(d) {return xs(d.work_year);})
-//     .attr('y', function(d) {return ys(d.remote);})
-//     .attr('width', 20)
-//     .attr('height', function(d) {return height - ys(d.remote);})
-//     .attr("transform", "translate("+20+", 0)")
-//     .attr('fill', 'green');
-
-
-// d3.select("svg")
-//     .attr("width", width + 2*margin)
-//     .attr("height", height + 2*margin)
-    
-//     .append("g")
-//     .attr("transform", "translate("+margin+",0)")
-//     //  .call(makeAnnotations)
-
-//     .selectAll('rect')
-//     .data(grouped_data_SE)
-//     .enter()
-//     .append('rect')
-//     .attr('x', function(d) {return xs(d.work_year);})
-//     .attr('y', function(d) {return ys(d.remote);})
-//     .attr('width', 20)
-//     .attr('height', function(d) {return height - ys(d.remote);})
-//     .attr("transform", "translate("+40+", "+100+")")
-//     .attr('fill', 'steelblue');
-// // ================== AXES ==================
-// d3.select("svg")
-//     .append("g")
-//     .attr("transform", "translate("+margin+", "+margin+")")
-//     .call(d3.axisLeft(ys));
-
-// d3.select("svg")
-//     .append("g")
-//     .attr("transform", "translate("+margin+", "+(height+margin)+")")
-//     .call(d3.axisBottom(xs))
-//     .selectAll('text') 
-//     .attr("transform", "translate(10,20)rotate(25)")
-//     .attr('fill', 'teal')
-
-// // ============================================
-
-
-// // ================================================================================================================
-
-
+// ===================================================================================================================
+// ===================================================================================================================
+// @ Clear svg for updading parameter
+var svg = d3.select("svg");
+svg.selectAll("*").remove();
+// ===================================================================================================================
 }
-

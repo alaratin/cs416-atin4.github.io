@@ -11,53 +11,54 @@
         <script src='https://d3js.org/d3.v7.min.js'></script>
         <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
         <!-- <script src="js/d3-annotation.min.js"></script> -->
-        <!-- <script type="module" src="js/library/topojson-client.js"></script> -->
-        <script src="https://unpkg.com/topojson-client@3"></script> 
-    </head>
+     </head>
+ 
 
      <body onload="init()">
         <header role = 'banner'>
             <div>
-                <h1> Let's Hear About Some Movies </h1>
+                <h1> COVID-19 After Effect on Data Scientists </h1>
             </div>
-            <p> Did you know there are in total of 685,051 movies listed in the IMDB website? However, the distribution of the 
-                number of the movies per years varies, sometimes minimally, sometimes drastically. The chart below demonstrates
-                the changes of the number of movies amongst the years. 
+            <p> As data processing is significant in understanding and improving bussinesses, data scientists have become precious to
+                bussinesses in this new data-driven world. COVID-19 was unfortunate to all industries and despite having potential in 
+                converting tasks into remote positions, let's observe how data scientists salary got impacted thoughout the years of 2020
+                to 2023.
             </p>
 
             <p>
                 Note that user interaction opportunities are available as you pass through slides using the navigation panel.
             </p>
             
-            <div>
-                <ul class='nav-items'>
-                    <a href="index.html" class="button">&laquo; Previous</a>
-                    <a href="page-2.html" class="button">Next &raquo;</a>
-                    <!-- <a href="index.html" class="round-button">&#8249;</a>
-                    <a href="page-2.html" class="round-button">&#8250;</a> -->
-                </ul>
-            </div>
+            <!-- NEXT PAGE BUTTON -->
+             <div>
+                 <ul class='nav-items'>
+                     <!-- <a href="index.html" class="button">&laquo; Previous</a> -->
+                     <a href="page-2.html" class="button">Next &raquo;</a>
+                     <!-- <a href="index.html" class="round-button">&#8249;</a>
+                     <a href="page-2.html" class="round-button">&#8250;</a> -->
+                 </ul>
+             </div>
 
 
-            <div>
-                <ul class='nav-items'>
-                    <!-- <a href="index.html" class="button">&laquo; Previous</a>
-                    <a href="page-2.html" class="button">Next &raquo;</a> -->
-                    <a href="index.html" class="round-button">&#8249;</a>
-                    <a href="page-2.html" class="round-button">&#8250;</a>
-                </ul>
-            </div>
+             <div>
+                 <ul class='nav-items'>
+                     <!-- <a href="index.html" class="button">&laquo; Previous</a>
+                     <a href="page-2.html" class="button">Next &raquo;</a> -->
+                     <!-- <a href="index.html" class="round-button">&#8249;</a> -->
+                     <a href="page-2.html" class="round-button">&#8250;</a>
+                 </ul>
+             </div>
 
-            <style>
-                .country {
-                  fill: rgb(112, 97, 97);
-                  stroke: white;
-                }
-              </style>
-            
-            <svg width=960 height=600 style="display: block; margin: auto"> </svg>
-            <!-- <svg width=960 height=600> </svg> -->
-            <script src="js/country/country.js"></script>
+
+            <!-- <svg width=300 height=300> </svg>
+            <script src="js/job-dist.js"></script> -->
+
+            <!-- <svg width=300 height=300 style="background-color: rgb(249, 253, 255); display: block; margin: auto"> </svg> -->
+            <svg width=300 height=300 style="display: block; margin: auto"> </svg>
+            <script src="js/job-dist-years.js"></script>
+
+            <!-- <svg width=300 height=300> </svg>
+            <script src="js/job-remote.js"></script> -->
 
         </header>
         <main role = 'main'>
