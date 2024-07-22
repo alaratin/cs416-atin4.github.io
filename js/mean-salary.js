@@ -47,50 +47,53 @@ const line = d3.line()
 
 console.log("here", new_data)
 // ============================================ CANVAS SETTINGS ====================================================
-d3.select("svg")
-    .attr("width", width + 2*margin)
-    .attr("height", height + 2*margin)
-    
-    .append("g")
-    .attr("transform", "translate("+margin+","+margin+")")
-    //  .call(makeAnnotations)
+// function update(data){
 
-    .append('path')
-    .datum(new_data)
-    .attr("class", "line") 
-    .attr('fill', 'none')
-    .attr('stroke', 'blue')
-    .attr('stroke-width', 1.5)
-    .attr('d', line);
+    d3.select("svg")
+        .attr("width", width + 2*margin)
+        .attr("height", height + 2*margin)
+        
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        //  .call(makeAnnotations)
 
-d3.select("svg")
-    .attr("width", width + 2*margin)
-    .attr("height", height + 2*margin)
+        .append('path')
+        .datum(new_data)
+        .attr("class", "line") 
+        .attr('fill', 'none')
+        .attr('stroke', 'blue')
+        .attr('stroke-width', 1.5)
+        .attr('d', line);
 
-    .append("g")
-    .attr("transform", "translate("+margin+","+margin+")")
+    d3.select("svg")
+        .attr("width", width + 2*margin)
+        .attr("height", height + 2*margin)
 
-    .selectAll('dot')
-    .data(new_data)
-    .enter()
-    .append('circle')
-    .attr("cx", function (d) { return xs(d.work_year); } )
-    .attr("cy", function (d) { return ys(d.mean_salary); } )
-    .attr("r", 3)
-    .attr('fill', 'red');
-// ================== AXES ==================
-d3.select("svg")
-    .append("g")
-    .attr("transform", "translate("+margin+", "+margin+")")
-    .call(d3.axisLeft(ys));
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
 
-d3.select("svg")
-    .append("g")
-    .attr("transform", "translate("+margin+", "+(height+margin)+")")
-    .call(d3.axisBottom(xs).tickValues([2020,2021,2022,2023]).tickFormat(d3.format("d")));
+        .selectAll('dot')
+        .data(new_data)
+        .enter()
+        .append('circle')
+        .attr("cx", function (d) { return xs(d.work_year); } )
+        .attr("cy", function (d) { return ys(d.mean_salary); } )
+        .attr("r", 3)
+        .attr('fill', 'red');
+    // ================== AXES ==================
+    d3.select("svg")
+        .append("g")
+        .attr("transform", "translate("+margin+", "+margin+")")
+        .call(d3.axisLeft(ys));
+
+    d3.select("svg")
+        .append("g")
+        .attr("transform", "translate("+margin+", "+(height+margin)+")")
+        .call(d3.axisBottom(xs).tickValues([2020,2021,2022,2023]).tickFormat(d3.format("d")));
 // ============================================
+// }
 
-
+// update(data)
 // ================================================================================================================
 
 
