@@ -24,7 +24,6 @@ a {
 .nav-items{
     margin: auto;
     display: flex;
-    /* flex-direction: column; */
     justify-content: center;
 }
 /* ===================== BUTTON STYLING ================= */

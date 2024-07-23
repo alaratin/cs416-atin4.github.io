@@ -3,10 +3,10 @@ async function init() {
 var height = 500;
 var width = 500;
 var margin = 100;
-var xWidth = 400;
 
 // =============================================== DATA SELECTION =============================================
-const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin4.github.io/main/data/ds_salaries.csv");
+// const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin4.github.io/main/data/ds_salaries.csv");
+const data = await d3.csv("https://raw.githubusercontent.com/JorgeMiGo/Data-Science-Salaries-2023/main/Dataset/ds_salaries.csv");
 // ============================================================================================================
 
 // ================================================= GROUPING ===================================================
@@ -56,23 +56,6 @@ console.log("SE", grouped_data_SE)
 // =============================================== ANNOTATIONS ================================================
 var label_color= d3.color("brown").darker(); 
 const annotations = [
-    // {
-    //     note: {
-    //         label: "Lowest salary with $87,071.25",
-    //         title: "Senior Level",
-    //         wrap: 100
-    //     },
-    //     type:d3.annotationCalloutCircle,
-    //     x: xs('2021'),
-    //     y: ys(88071.25),
-    //     subject:{
-    //         radius: 10,
-    //         raiduspadding: 5,
-    //     },
-    //     dy: -100,
-    //     dx: 0,
-    //     color: label_color
-    // },
     {
         note: {
             label: "Highest salary with $81,272.45",
@@ -87,7 +70,7 @@ const annotations = [
             raiduspadding: 5,
         },
         dy: 100,
-        dx: 0,
+        dx: -25,
         color: label_color
     },
     {
@@ -133,6 +116,7 @@ const makeAnnotations = d3.annotation()
 // ==============================================================================================================
 
 // ============================================ CANVAS SETTINGS ====================================================
+// ================================= ENTRY_LEVEL EXP =================================
 d3.select("svg")
     .attr("width", width + 2*margin)
     .attr("height", height + 2*margin)
@@ -149,6 +133,30 @@ d3.select("svg")
     .attr('stroke-width', 1.5)
     .attr('d', line);
 
+d3.select('svg')
+    .append("g")
+    .attr("transform", "translate("+margin+","+margin+")")
+    .selectAll(".dot")
+    .data(grouped_data_EN)
+    .enter()
+    .append("circle") // Uses the enter().append() method
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", d => xs(d.work_year))
+    .attr("cy", d => ys(d.mean_salary))
+    .attr("r", 2);
+
+    // .on("mouseover", function(d) {      
+    //     d3.select('svg').append("text")
+    //       .text(d.mean_salary)
+    //       .attr('class', 'tooltip').style("font-size","10px")
+    //       .attr("x", xs(d.work_year))
+    //       .attr("y", ys(d.mean_salary))
+    //       .attr('fill', 'red');
+    //       console.log(d.mean_salary)
+    // })
+// ==================================================================================
+
+// ================================= MID_LEVEL EXP ==================================
 d3.select("svg")
     .attr("width", width + 2*margin)
     .attr("height", height + 2*margin)
@@ -161,7 +169,21 @@ d3.select("svg")
     .attr('fill', 'none')
     .attr('stroke', 'green')
     .attr('stroke-width', 1.5)
-    .attr('d', line);
+    .attr('d', line)
+
+d3.select('svg')
+    .append("g")
+    .attr("transform", "translate("+margin+","+margin+")")
+    .selectAll(".dot")
+    .data(grouped_data_MI)
+    .enter()
+    .append("circle") // Uses the enter().append() method
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", d => xs(d.work_year))
+    .attr("cy", d => ys(d.mean_salary))
+    .attr("r", 2);
+// ==================================================================================
+// ================================= SENIOR_LEVEL EXP ===============================
 
 d3.select("svg")
     .attr("width", width + 2*margin)
@@ -173,10 +195,52 @@ d3.select("svg")
     .datum(grouped_data_SE)
     .attr("class", "line") 
     .attr('fill', 'none')
-    .attr('stroke', 'blue')
+    .attr('stroke', 'steelblue')
     .attr('stroke-width', 1.5)
     .attr('d', line);
 
+    
+d3.select('svg')
+    .append("g")
+    .attr("transform", "translate("+margin+","+margin+")")
+    .selectAll(".dot")
+    .data(grouped_data_SE)
+    .enter()
+    .append("circle") // Uses the enter().append() method
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", d => xs(d.work_year))
+    .attr("cy", d => ys(d.mean_salary))
+    .attr("r", 2);
+// ==================================================================================
+// ============================== LEGENDS SETTINGS ==================================
+const legend_Dict = [
+    {color: "steelblue", label: "Senior Level Position"},
+    {color: "green", label: "Middle Level Position"},
+    {color: "red", label: "Entry Level Position"}];
+
+
+const legend = d3.select('svg').selectAll(".legend")
+.data(legend_Dict)
+.enter().append("g")
+.attr("class", "legend")
+.attr("transform", (d, i) => "translate(15,"+(25*i)+")");
+
+legend.append("rect")
+.attr('x', width)
+.attr('y', height-40)
+.attr("width", 15)
+.attr("height", 15)
+.style("fill", d => d.color);
+
+
+legend.append("text")
+.attr("x", width + 30)
+.attr('y', height-32)
+// .attr("y", height-10)
+.attr("dy", ".30em")
+.style("text-anchor", "start")
+.text(d => d.label);
+// ==================================================================================
 
 // ========================================== AXES SETTING ======================================================
 d3.select("svg")

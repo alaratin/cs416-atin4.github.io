@@ -1,73 +1,20 @@
 // "use strict"
 async function init() {
-var height = 500;
-var width = 500;
-var margin = 100;
+    // =============================================== DATA SELECTION =============================================
+    // const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin4.github.io/main/data/ds_salaries.csv");
+    const data = await d3.csv("https://raw.githubusercontent.com/JorgeMiGo/Data-Science-Salaries-2023/main/Dataset/ds_salaries.csv");
+    // ============================================================================================================
 
-// =============================================== DATA SELECTION =============================================
-// const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin4.github.io/main/data/ds_salaries.csv");
-const data = await d3.csv("https://raw.githubusercontent.com/JorgeMiGo/Data-Science-Salaries-2023/main/Dataset/ds_salaries.csv");
-// ============================================================================================================
+    var annotation = CreateAnnotation()
+    var EN,MI,SE = filterData(data)
+    var line = createLineChart(data)
+    displayData(EN, MI, SE, annotation, year, line)
 
-// =============================================== ANNOTATIONS ================================================
-// Features of the annotation
-// var annotations = data.map(d => ({
-//     note: { label: `(${d.AverageCityMPG}, ${d.AverageHighwayMPG})` },
-//     x: xs(d.AverageCityMPG),
-//     y: ys(d.AverageHighwayMPG),
-//     dx: 0.5,
-//     dy: 0.5
-// }));
-
-// var makeAnnotations = d3.annotation().annotations(annotations);
-// ==============================================================================================================
-
-const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE");
-const data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI");
-const data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN");
-    
-const grouped_data_SE =  Array.from(d3.group(data_SE, d => d.work_year),
-([key, values]) => ({
-    work_year: key,
-    remote: d3.mean(values, d => d.remote_ratio)
-}));
-const grouped_data_MI =  Array.from(d3.group(data_MI, d => d.work_year),
-([key, values]) => ({
-    work_year: key,
-    remote: d3.mean(values, d => d.remote_ratio)
-}));
-
-const grouped_data_EN =  Array.from(d3.group(data_EN, d => d.work_year),
-([key, values]) => ({
-    work_year: key,
-    remote: d3.mean(values, d => d.remote_ratio)
-}));
-grouped_data_SE.sort((a,b) => d3.ascending(a.work_year, b.work_year));
-grouped_data_MI.sort((a,b) => d3.ascending(a.work_year, b.work_year));
-grouped_data_EN.sort((a,b) => d3.ascending(a.work_year, b.work_year));
-
-const xs = d3.scaleBand().domain(grouped_data_EN.map(d=>d.work_year)).range([0,width]).padding(0.5);
-const ys = d3.scaleLinear().domain([0, d3.max(grouped_data_EN, d=>d.remote)]).range([height, 0]);
-
+}
 
 // =============================================== ANNOTATIONS ================================================
-// Features of the annotation ----------- SENIOR LEVEL -------------
-const annotations = [
-    // {
-    //     note: {
-    //         label: "Lowest salary with $87,071",
-    //         title: "Senior Level",
-    //         wrap: 100
-    //     },
-    //     type:d3.annotationCalloutCircle,
-    //     x: xs('2021'),
-    //     y: ys(70),
-    //     radius: 10,
-    //     raiduspadding: 20,
-    //     dy: -20,
-    //     dx: 10
-    // },
-    
+function CreateAnnotation(){
+    const annotations = [    
     {
         note: { 
           title: "Equalization Period", 
@@ -78,51 +25,93 @@ const annotations = [
         subject: {
           height: height - margin.top - margin.bottom,
           width: 100
-
-        //   width: width - margin.top
         },
         type: d3.annotationCalloutRect,
         y: margin.top,
         x: xs(2021),
-        disable: ["connector"], // doesn't draw the connector
-        //can pass "subject" "note" and "connector" as valid options
-      //   dx: (xs(new Date("6/1/2009")) - xs(new Date("12/1/2007")))/2,
-      //   data: { x: "12/1/2007"}
+        disable: ["connector"]
       }
 ];
-// ----------------------------------------------------------------------
-const makeAnnotations = d3.annotation()
-            .annotations(annotations);
+    const makeAnnotations = d3.annotation()
+                .annotations(annotations);
+
+    return makeAnnotations;
+}
 // ==============================================================================================================
-const EN_line =  Array.from(d3.group(data_EN, d => d.work_year),
-([key, values]) => ({
-    work_year: key,
-    mean_salary: d3.mean(values, d => d.salary_in_usd)
-}));
+function createLineChart(data){
 
-const MI_line =  Array.from(d3.group(data_MI, d => d.work_year),
-([key, values]) => ({
-    work_year: key,
-    mean_salary: d3.mean(values, d => d.salary_in_usd)
-}));
-const SE_line =  Array.from(d3.group(data_SE, d => d.work_year),
-([key, values]) => ({
-    work_year: key,
-    mean_salary: d3.mean(values, d => d.salary_in_usd)
-}));
-
-
-EN_line.sort((a,b) => d3.ascending(a.work_year, b.work_year));
-MI_line.sort((a,b) => d3.ascending(a.work_year, b.work_year));
-SE_line.sort((a,b) => d3.ascending(a.work_year, b.work_year));
-
-const x_line = d3.scaleLinear().domain(d3.extent(EN_line, d=>d.work_year)).range([0,width]);
-const y_line = d3.scaleLinear().domain([0, d3.max(EN_line, d=>d.mean_salary)]).range([height, 0]);
+    const EN_line =  Array.from(d3.group(data_EN, d => d.work_year),
+    ([key, values]) => ({
+        work_year: key,
+        mean_salary: d3.mean(values, d => d.salary_in_usd)
+    }));
     
-const line = d3.line()
-    .x(function(d) {return x_line(d.work_year);})
-    .y(function(d) {return y_line(d.mean_salary);})
-    .curve(d3.curveMonotoneX);
+    const MI_line =  Array.from(d3.group(data_MI, d => d.work_year),
+    ([key, values]) => ({
+        work_year: key,
+        mean_salary: d3.mean(values, d => d.salary_in_usd)
+    }));
+    const SE_line =  Array.from(d3.group(data_SE, d => d.work_year),
+    ([key, values]) => ({
+        work_year: key,
+        mean_salary: d3.mean(values, d => d.salary_in_usd)
+    }));
+    
+    
+    EN_line.sort((a,b) => d3.ascending(a.work_year, b.work_year));
+    MI_line.sort((a,b) => d3.ascending(a.work_year, b.work_year));
+    SE_line.sort((a,b) => d3.ascending(a.work_year, b.work_year));
+    
+    const x_line = d3.scaleLinear().domain(d3.extent(EN_line, d=>d.work_year)).range([0,width]);
+    const y_line = d3.scaleLinear().domain([0, d3.max(EN_line, d=>d.mean_salary)]).range([height, 0]);
+        
+    const line = d3.line()
+        .x(function(d) {return x_line(d.work_year);})
+        .y(function(d) {return y_line(d.mean_salary);})
+        .curve(d3.curveMonotoneX);
+
+    return line;    
+}
+
+function filterData(data){
+    var height = 500;
+    var width = 500;
+    var margin = 100;
+
+    
+    const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE");
+    const data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI");
+    const data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN");
+        
+    const grouped_data_SE =  Array.from(d3.group(data_SE, d => d.work_year),
+    ([key, values]) => ({
+        work_year: key,
+        remote: d3.mean(values, d => d.remote_ratio)
+    }));
+    const grouped_data_MI =  Array.from(d3.group(data_MI, d => d.work_year),
+    ([key, values]) => ({
+        work_year: key,
+        remote: d3.mean(values, d => d.remote_ratio)
+    }));
+
+    const grouped_data_EN =  Array.from(d3.group(data_EN, d => d.work_year),
+    ([key, values]) => ({
+        work_year: key,
+        remote: d3.mean(values, d => d.remote_ratio)
+    }));
+    grouped_data_SE.sort((a,b) => d3.ascending(a.work_year, b.work_year));
+    grouped_data_MI.sort((a,b) => d3.ascending(a.work_year, b.work_year));
+    grouped_data_EN.sort((a,b) => d3.ascending(a.work_year, b.work_year));
+
+    return grouped_data_SE, grouped_data_MI, grouped_data_EN;
+}
+
+
+
+const xs = d3.scaleBand().domain(grouped_data_EN.map(d=>d.work_year)).range([0,width]).padding(0.5);
+const ys = d3.scaleLinear().domain([0, d3.max(grouped_data_EN, d=>d.remote)]).range([height, 0]);
+
+
 // ================================================================================================================
 
 console.log("EN", grouped_data_EN)
@@ -149,18 +138,18 @@ d3.select("svg")
     .attr('fill', 'red');
 
     // ======================== LINE CHART ========================
-    // d3.select("svg")
-    // .attr("width", width + 2*margin)
-    // .attr("height", height + 2*margin)
-    // .append("g")
-    // .attr("transform", "translate("+margin+","+margin+")")
-    // .append('path')
-    // .datum(EN_line)
-    // .attr("class", "line") 
-    // .attr('fill', 'none')
-    // .attr('stroke', 'red')
-    // .attr('stroke-width', 1.5)
-    // .attr('d', line);
+    d3.select("svg")
+    .attr("width", width + 2*margin)
+    .attr("height", height + 2*margin)
+    .append("g")
+    .attr("transform", "translate("+margin+","+margin+")")
+    .append('path')
+    .datum(EN_line)
+    .attr("class", "line") 
+    .attr('fill', 'none')
+    .attr('stroke', 'red')
+    .attr('stroke-width', 1.5)
+    .attr('d', line);
     // =============================================================
 // ==================================================================================
 
