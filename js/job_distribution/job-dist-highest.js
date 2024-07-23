@@ -48,41 +48,83 @@ const line = d3.line()
 
 // ===============================================================================================================
 
-// console.log("here1", grouped_data_EN)
-// console.log("here2", grouped_data_MI)
-console.log("here3", grouped_data_SE)
+console.log("En", grouped_data_EN)
+console.log("MI", grouped_data_MI)
+console.log("SE", grouped_data_SE)
+
+
 // =============================================== ANNOTATIONS ================================================
-// Features of the annotation ----------- SENIOR LEVEL -------------
+var label_color= d3.color("brown").darker(); 
 const annotations = [
+    // {
+    //     note: {
+    //         label: "Lowest salary with $87,071.25",
+    //         title: "Senior Level",
+    //         wrap: 100
+    //     },
+    //     type:d3.annotationCalloutCircle,
+    //     x: xs('2021'),
+    //     y: ys(88071.25),
+    //     subject:{
+    //         radius: 10,
+    //         raiduspadding: 5,
+    //     },
+    //     dy: -100,
+    //     dx: 0,
+    //     color: label_color
+    // },
     {
         note: {
-            label: "Lowest salary with $87,071.25",
-            title: "Senior Level",
+            label: "Highest salary with $81,272.45",
+            title: "Entry Level",
             wrap: 100
         },
         type:d3.annotationCalloutCircle,
-        x: xs('2021'),
-        y: ys(88071.25),
+        x: xs('2022'),
+        y: ys(81272.44827586207),
         subject:{
             radius: 10,
             raiduspadding: 5,
         },
-        dy: -100,
+        dy: 100,
         dx: 0,
-        color: 'orange'
+        color: label_color
     },
     {
         note: {
-          label: "Longer text to show text wrapping",
-          title: "Annotations :)"
+            label: "Highest salary with $104,014.79",
+            title: "Medium Level",
+            wrap: 100
         },
-        y: ys('160000'),
-        x: 0,
-        dx: xWidth,
-        type: d3.annotationXYThreshold,
-        color: 'orange'
+        type:d3.annotationCalloutCircle,
+        x: xs('2023'),
+        y: ys(104014.78723404255),
+        subject:{
+            radius: 10,
+            raiduspadding: 5,
+        },
+        dy: -50,
+        dx: -50,
+        color: label_color
+    },
 
-      }
+    {
+        note: {
+            label: "Highest salary with $172,916.25",
+            title: "Senior Level",
+            wrap: 100
+        },
+        type:d3.annotationCalloutCircle,
+        x: xs('2020'),
+        y: ys(172916.25),
+        subject:{
+            radius: 10,
+            raiduspadding: 5,
+        },
+        dy: 25,
+        dx: 75,
+        color: label_color
+    },
 ];
 // ----------------------------------------------------------------------
 const makeAnnotations = d3.annotation()
@@ -136,7 +178,7 @@ d3.select("svg")
     .attr('d', line);
 
 
-// ================== AXES ==================
+// ========================================== AXES SETTING ======================================================
 d3.select("svg")
     .append("g")
     .attr("transform", "translate("+margin+", "+margin+")")
@@ -152,21 +194,22 @@ d3.select("svg")
     .attr("y", height + margin*1.5)
     .attr("transform", "translate(175,30)")
     .text("Work Years");
-// ============================================
+// ===============================================================================================================
 
-// ================================================================================================================
+// ========================================== AXES LABELING ======================================================
 d3.select('svg').append("text")
           .attr("text-anchor", "end")
           .attr("x", 200)
-          .attr("y", height + margin*1.5)
+          .attr("y", height + margin*1.2)
           .attr("transform", "translate(175,30)")
           .text("Work Years");
 
 d3.select('svg').append("text")
           .attr("text-anchor", "end")
-          .attr("x", 150)
-          .attr("y", 90)
-          .text("Mean Salary in USD");
+          .attr("x", 160)
+          .attr("y", 80)
+          .text("Mean Salary in USD ($)");
+// ===============================================================================================================
 
 }
 

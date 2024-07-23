@@ -1,12 +1,19 @@
 
 
 
-/*------------------ Header Styling ------------------------ */
-h1, h2, h3 {font-weight: bold; line-height: 1.1; margin: 20px 0 10px 0;}
+/*==================== Header Styling ======================= */
+h1, h2{font-weight: bold; line-height: 1.1; margin: 20px 0 10px 0;}
+h3{ 
+    padding-left: 0.5em;
+    text-decoration: underline;
+    /* color: rgb(103, 59, 14); */
+}
 h1 { margin-bottom: 0.7em; font-size: 2.441em; font-family: "Times New Roman", serif; text-align: center;}
+/* header  {background-image: linear-gradient(to bottom, #ced2f0, #a5a0e2);} */
+header  {background-image: linear-gradient(to bottom, #dbac82, #844a07);}
 
 
-/* ----------------- Navigation Panel ---------------------- */
+/* ==================== Navigation Panel ================== */
 a {
     text-decoration: none;
     display: inline-block;
@@ -14,6 +21,13 @@ a {
   }
 
 
+.nav-items{
+    margin: auto;
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: center;
+}
+/* ===================== BUTTON STYLING ================= */
 .button{
     background-color: rgb(242, 247, 248);
     color: black;
@@ -37,11 +51,8 @@ a {
 .round-button:hover{
     background-color: rgb(127, 214, 255);
 }
-
-.nav-items{
-    margin: auto;
-    display: flex;
-    /* flex-direction: column; */
-    justify-content: center;
+/* ========================================================== */
+.canvas{
+    border: black;
+    border-style:double;
 }
-

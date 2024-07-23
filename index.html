@@ -13,55 +13,53 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
     </head>
 
+    <!-- @ MAP STRUCTURE STYLE -->
+    <style>
+        .country {
+          fill: rgb(112, 97, 97);
+          stroke: white;
+        }
+    </style>
+    <!-- ====================== -->
+
      <body onload="init()">
         <header role = 'banner'>
             <div>
-                <h1> The Railroad of Data Scientists: Journey from 2020 to 2023 </h1>
+                <h1> What Did COIVD-19 Do To Our Data Scientist: A Roadmap from 2020 to 2023 </h1>
             </div>
-            <p> 
-            </p>
+        </header>
 
-            <p>
-                Note that you can access further information regarding mean salaries per country solely for the data scientist positions
-                as you hover over the map. 
-            </p>
-            </header>
+        <p> 
+        </p>
 
-            <div>
-                <ul class='nav-items'>
-                    <!-- <a href="index.html" class="button">&laquo; Previous</a> -->
-                    <a href="page-2.html" class="button">Next &raquo;</a>
-                </ul>
-            </div>
+        <p>
+            Note that you can access further information regarding mean salaries per country solely for the data scientist positions
+            as you hover over the map. 
+        </p>
 
-
-            <div>
-                <ul class='nav-items'>
-                    <!-- <a href="index.html" class="round-button">&#8249;</a> -->
-                    <a href="page-2.html" class="round-button">&#8250;</a>
-                </ul>
-            </div>
-
-            <style>
-                .country {
-                  fill: rgb(112, 97, 97);
-                  stroke: white;
-                }
-              </style>
-
-            <!-- <form id="filterForm">
-                <label for="year">Year:</label>
-                <input type="number" id="year" name="year">
-                <button type="submit">Render Map</button>
-            </form>  -->
+        </div>
+            <!-- @ NAVIGATION ITEM LOCATION -->
+            <ul class='nav-items'>
+                <a href="page-2.html" class="button">Next &raquo;</a>
+            </ul>
+            <ul class='nav-items'>
+                <a href="page-2.html" class="round-button">&#8250;</a>
+            </ul>
+            <!-- =========================== -->
+        <div>
+            
+        <div class="canvas">
+            <h3> Worldmap of Data Sceintitst Mean Salary Distribution in USD ($) </h3>
 
             <input type="text" id="year" value="2020">
-            <button id = 'updateMap' onclick="init()">Submit</button>
+            <button id = 'updateMap' onclick="init()">Render Map</button>
             <!-- <button id = 'updateMap'>Submit</button> -->
 
             <svg width=960 height=600 style="display: block; margin: auto"> </svg>
             <script src="js/country/country.js"></script>
             
+
+        </div>
         </body>
 
 </html>
