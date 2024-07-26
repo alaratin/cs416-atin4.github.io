@@ -368,42 +368,47 @@ d3.select('svg')
         }
     });
     
+    // ==================================================================================
+    // ============================== LEGENDS SETTINGS ==================================
+    // ==================================================================================
+
+    const legend_Dict = [
+                        {color: "steelblue", label: "Senior Level Position"},
+                        {color: "green", label: "Middle Level Position"},
+                        {color: "red", label: "Entry Level Position"}];
+    
+    
+    const legend = d3.select('svg').selectAll(".legend")
+                    .data(legend_Dict)
+                    .enter().append("g")
+                    .attr("class", "legend")
+                    // .attr("transform", (d, i) => "translate(15,"+(25*i)+")");
+                    .attr("transform", (d, i) => "translate("+(200*i)+",0)");
+
+    legend.append("rect")
+        .attr('x', width/2 - 150)
+        // .attr('y', height-40)
+        .attr('y', 40)
+        .attr("width", 12)
+        .attr("height", 12)
+        .style("fill", d => d.color);
+
+
+    legend.append("text")
+        .attr("x", width/2 - 130)
+        // .attr('y', height-32)
+        .attr("y", 50)
+        .attr("dy", ".10em")
+        .style("text-anchor", "start")
+        .text(d => d.label);
+    // ==================================================================================
 
 }
 
     
     
     
-    // // ==================================================================================
-    // // ============================== LEGENDS SETTINGS ==================================
-    // const legend_Dict = [
-    //                     {color: "steelblue", label: "Senior Level Position"},
-    //                     {color: "green", label: "Middle Level Position"},
-    //                     {color: "red", label: "Entry Level Position"}];
-    
-    
-    // const legend = d3.select('svg').selectAll(".legend")
-    //             .data(legend_Dict)
-    //             .enter().append("g")
-    //             .attr("class", "legend")
-    //             .attr("transform", (d, i) => "translate(15,"+(25*i)+")");
-    
-    //         legend.append("rect")
-    //             .attr('x', width)
-    //             .attr('y', height-40)
-    //             .attr("width", 15)
-    //             .attr("height", 15)
-    //             .style("fill", d => d.color);
-    
-    
-    //         legend.append("text")
-    //             .attr("x", width + 30)
-    //             .attr('y', height-32)
-    //             // .attr("y", height-10)
-    //             .attr("dy", ".30em")
-    //             .style("text-anchor", "start")
-    //             .text(d => d.label);
-    // // ==================================================================================
+   
     
 
     
