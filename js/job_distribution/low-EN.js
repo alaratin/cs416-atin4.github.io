@@ -8,100 +8,26 @@ async function init() {
     // const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin4.github.io/main/data/ds_salaries.csv");
     const data = await d3.csv("https://raw.githubusercontent.com/JorgeMiGo/Data-Science-Salaries-2023/main/Dataset/ds_salaries.csv");
     // ============================================================================================================
-    var small_flag = document.querySelector('.small').checked;
-    var mid_flag = document.querySelector('.mid').checked;
-    var large_flag = document.querySelector('.large').checked;
-    var all_flag = document.querySelector('.all').checked;
+    var EN_flag = 1;
+    var MI_flag = 0;
+    var SE_flag = 0;
 
-    var fifty_flag = document.querySelector('.fifty').checked;
-    var hundred_flag = document.querySelector('.hundred').checked;
-    var zero_flag = document.querySelector('.zero').checked;
-    var all_remote = document.querySelector('.all_remo').checked;
-
-    var us_flag = document.querySelector('.us').checked;
-    var can_flag = document.querySelector('.can').checked;
-    // var ge_flag = document.querySelector('.ger').checked;
-    var uk_flag = document.querySelector('.uk').checked;
-    var all_count = document.querySelector('.all_count').checked;
-    console.log(us_flag,can_flag,uk_flag,all_count)
     
+    console.log("flag-e",EN_flag)
+    console.log("flag-m",MI_flag)
+    console.log("flag-s",SE_flag)
+    
+    // if(EN_flag == 0 || MI_flag == 0 || SE_flag == 0){
+    //     // const container = document.getElementById("canvas");
+    //     // container.innerHTML = "";
+    //     var svg = d3.select("svg");
+    //     svg.selectAll("*").remove();
+    // }
     
     // ================================================= GROUPING ===================================================
-    var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE");
-    var data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI");
-    var data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN");
-    var svg = d3.select("svg");
-
-    if(!all_flag){
-        if(small_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.company_size == "S");
-            data_MI = data_MI.filter(d=>d.company_size == "S");
-            data_EN = data_EN.filter(d=>d.company_size == "S");
-        }
-        else if(mid_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.company_size == "M");
-            data_MI = data_MI.filter(d=>d.company_size == "M");
-            data_EN = data_EN.filter(d=>d.company_size == "M");
-        }
-        else if(large_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.company_size == "L");
-            data_MI = data_MI.filter(d=>d.company_size == "L");
-            data_EN = data_EN.filter(d=>d.company_size == "L");
-        }
-    }
-
-    if(!all_remote){
-        if(zero_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.remote_ratio == "0");
-            data_MI = data_MI.filter(d=>d.remote_ratio == "0");
-            data_EN = data_EN.filter(d=>d.remote_ratio == "0");
-        }
-        else if(fifty_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.remote_ratio == "50");
-            data_MI = data_MI.filter(d=>d.remote_ratio == "50");
-            data_EN = data_EN.filter(d=>d.remote_ratio == "50");
-        }
-        else if(hundred_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.remote_ratio == "100");
-            data_MI = data_MI.filter(d=>d.remote_ratio == "100");
-            data_EN = data_EN.filter(d=>d.remote_ratio == "100");
-        }
-    }
-
-    if(!all_count){
-        if(us_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.company_location == "US");
-            data_MI = data_MI.filter(d=>d.company_location == "US");
-            data_EN = data_EN.filter(d=>d.company_location == "US");
-        }
-        // else if(ge_flag){
-        //     svg.selectAll("*").remove();
-        //     data_SE = data_SE.filter(d=>d.company_location == "DE");
-        //     data_MI = data_MI.filter(d=>d.company_location == "DE");
-        //     data_EN = data_EN.filter(d=>d.company_location == "DE");
-        // }
-        else if(can_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.company_location == "CA");
-            data_MI = data_MI.filter(d=>d.company_location == "CA");
-            data_EN = data_EN.filter(d=>d.company_location == "CA");
-        }
-        else if(uk_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.company_location == "GB");
-            data_MI = data_MI.filter(d=>d.company_location == "GB");
-            data_EN = data_EN.filter(d=>d.company_location == "GB");
-        }
-    }
-
-    
+    const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE");
+    const data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI");
+    const data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN");
         
     const grouped_data_SE =  Array.from(d3.group(data_SE, d => d.work_year),
     ([key, values]) => ({
@@ -121,21 +47,14 @@ async function init() {
         mean_salary: d3.mean(values, d => d.salary_in_usd)
     }));
     
-
-    // console.log(MATH.max())
     grouped_data_SE.sort((a,b) => d3.ascending(a.work_year, b.work_year));
     grouped_data_MI.sort((a,b) => d3.ascending(a.work_year, b.work_year));
     grouped_data_EN.sort((a,b) => d3.ascending(a.work_year, b.work_year));
     // ===============================================================================================================
     // ============================================= LINE CHART DEFINITION============================================
-    const xs = d3.scaleLinear().domain(['2020','2023']).range([0,width]);
-    var max_val_salary = d3.max([
-                        d3.max(grouped_data_EN, d=>d.mean_salary),
-                        d3.max(grouped_data_MI, d=>d.mean_salary),
-                        d3.max(grouped_data_SE, d=>d.mean_salary)
-    ]);
-    const ys = d3.scaleLinear().domain([0, max_val_salary]).range([height, 0]);
-        // grouped_data_SE, d=>d.mean_salary)]).range([height, 0]);
+    
+    const xs = d3.scaleLinear().domain(d3.extent(grouped_data_SE, d=>d.work_year)).range([0,width]);
+    const ys = d3.scaleLinear().domain([0, d3.max(grouped_data_SE, d=>d.mean_salary)]).range([height, 0]);
     
     
     const line = d3.line()
@@ -155,38 +74,38 @@ async function init() {
     const annotations_EN = [
         {
             note: {
-                label: "Highest salary with $81,272.45",
+                label: "Lowest salary with $54,983.33",
                 title: "Entry Level",
                 wrap: 100
             },
             type:d3.annotationCalloutCircle,
-            x: xs('2022'),
-            y: ys(81272.44827586207),
+            x: xs('2020'),
+            y: ys(54983.33),
             subject:{
                 radius: 10,
                 raiduspadding: 5,
             },
-            dy: 100,
-            dx: -25,
+            dy: 75,
+            dx: 45,
             color: label_color
         }
     ];
     const annotations_MI = [
         {
             note: {
-                label: "Highest salary with $104,014.79",
+                label: "Lowest salary with $71,256",
                 title: "Medium Level",
                 wrap: 100
             },
             type:d3.annotationCalloutCircle,
-            x: xs('2023'),
-            y: ys(104014.78723404255),
+            x: xs('2020'),
+            y: ys(71256),
             subject:{
                 radius: 10,
                 raiduspadding: 5,
             },
-            dy: -50,
-            dx: -50,
+            dy: 75,
+            dx: 150,
             color: label_color
         }
     ];
@@ -194,19 +113,19 @@ async function init() {
     const annotations_SE = [
         {
             note: {
-                label: "Highest salary with $172,916.25",
+                label: "Lowest salary with $87,071.25",
                 title: "Senior Level",
                 wrap: 100
             },
             type:d3.annotationCalloutCircle,
-            x: xs('2020'),
-            y: ys(172916.25),
+            x: xs('2021'),
+            y: ys(88071.25),
             subject:{
                 radius: 10,
                 raiduspadding: 5,
             },
-            dy: 25,
-            dx: 75,
+            dy: -100,
+            dx: 0,
             color: label_color
         }
     ];
@@ -220,23 +139,26 @@ async function init() {
             .annotations(annotations_SE);
     
     displayData(grouped_data_EN, grouped_data_MI, grouped_data_SE, 
-                    makeAnnotations_EN, makeAnnotations_MI, makeAnnotations_SE, width, height, margin, line,xs,ys)
+                    makeAnnotations_EN, makeAnnotations_MI, makeAnnotations_SE, width, height, margin, line,xs,ys,
+                        EN_flag, MI_flag, SE_flag )
     }
     
     // ==============================================================================================================
     // ============================================ CANVAS SETTINGS ====================================================
     // ================================= ENTRY_LEVEL EXP =================================
     function displayData(grouped_data_EN, grouped_data_MI, grouped_data_SE, 
-                    makeAnnotations_EN, makeAnnotations_MI, makeAnnotations_SE, width, height, margin, line,xs,ys)
+                    makeAnnotations_EN, makeAnnotations_MI, makeAnnotations_SE, width, height, margin, line,xs,ys,
+                        EN_flag, MI_flag, SE_flag)
     {
-    d3.select("svg")
+    if(EN_flag){
+        d3.select("svg")
         .attr("width", width + 2*margin)
         .attr("height", height + 2*margin)
         
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        // .call(makeAnnotations_EN)
-
+        .call(makeAnnotations_EN)
+    
         .append('path')
         .datum(grouped_data_EN)
         .attr("class", "line") 
@@ -244,7 +166,7 @@ async function init() {
         .attr('stroke', 'red')
         .attr('stroke-width', 1.5)
         .attr('d', line);
-
+    
     d3.select('svg')
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
@@ -256,17 +178,22 @@ async function init() {
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
         .attr("r", 2);
-
+    
+    }    
+    else{
+        console.log("no EN")
+    }
     // ==================================================================================
     
     // ================================= MID_LEVEL EXP ==================================
+    if(MI_flag){
     d3.select("svg")
         .attr("width", width + 2*margin)
         .attr("height", height + 2*margin)
         
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        // .call(makeAnnotations_MI)
+        .call(makeAnnotations_MI)
     
         .append('path')
         .datum(grouped_data_MI)
@@ -274,7 +201,7 @@ async function init() {
         .attr('fill', 'none')
         .attr('stroke', 'green')
         .attr('stroke-width', 1.5)
-        .attr('d', line);
+        .attr('d', line)
     
     d3.select('svg')
         .append("g")
@@ -287,15 +214,20 @@ async function init() {
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
         .attr("r", 2);
+    }
+    else{
+        console.log("no MI")
+    }
     // ==================================================================================
     // ================================= SENIOR_LEVEL EXP ===============================
+    if (SE_flag){
     d3.select("svg")
         .attr("width", width + 2*margin)
         .attr("height", height + 2*margin)
         
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        // .call(makeAnnotations_SE)
+        .call(makeAnnotations_SE)
     
         .append('path')
         .datum(grouped_data_SE)
@@ -316,8 +248,11 @@ async function init() {
         .attr("class", "dot") // Assign a class for styling
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
-        .attr("r", 2);
-
+        .attr("r", 2)
+    }
+    else{
+        console.log("no SE")
+    }
     // ==================================================================================
     // ============================== LEGENDS SETTINGS ==================================
     const legend_Dict = [
@@ -333,18 +268,17 @@ async function init() {
                 .attr("transform", (d, i) => "translate(15,"+(25*i)+")");
     
             legend.append("rect")
-                .attr('x', width/2 - 25)
-                // .attr('y', height-40)
-                .attr('y', 20)
+                .attr('x', width)
+                .attr('y', height-40)
                 .attr("width", 15)
                 .attr("height", 15)
                 .style("fill", d => d.color);
     
     
             legend.append("text")
-                .attr("x", width/2)
-                // .attr('y', height-32)
-                .attr("y", 27)
+                .attr("x", width + 30)
+                .attr('y', height-32)
+                // .attr("y", height-10)
                 .attr("dy", ".30em")
                 .style("text-anchor", "start")
                 .text(d => d.label);
@@ -382,7 +316,6 @@ async function init() {
               .attr("y", 90)
               .text("Mean Salary in USD ($)");
     // ===============================================================================================================
-    
     }
     
     

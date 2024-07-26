@@ -24,10 +24,17 @@ a {
 .nav-items{
     margin: auto;
     display: flex;
-    justify-content: center;
+    justify-content: right;
 }
 /* ===================== BUTTON STYLING ================= */
 .button{
+    background-color: rgb(242, 247, 248);
+    color: black;
+    border-color: black;
+    border-style: double;
+}
+
+.exp2{
     background-color: rgb(242, 247, 248);
     color: black;
     border-color: black;
@@ -54,4 +61,19 @@ a {
 .canvas{
     border: black;
     border-style:double;
+}
+.container {
+    border-style: double;
+    border-radius: 10%;
+    width:fit-content;
+    padding: 2%;
+    padding-top: 0%;    
+    display: inline-block;
+    margin-right: 5%;
+    margin-left: 2%;
+}
+
+h4{
+    /* background-image: linear-gradient(to left, #553c9a, #b393d3); */
+    text-align: center;
 }

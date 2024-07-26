@@ -16,7 +16,8 @@
      <body onload="init()">
         <header role = 'banner'>
             <div>
-                <h1> What Did COIVD-19 Do To Our Data Scientist: A Roadmap from 2020 to 2023 </h1>
+                <h1> What Did COIVD-19 Do To Our Data Scientists:  </h1>
+                <h1> A Roadmap from 2020 to 2023 </h1>            
             </div>
         </header>
             
@@ -31,21 +32,29 @@
             <!-- @ NAVIGATION ITEM LOCATION -->
             <ul class='nav-items'>
                 <a href="index.html" class="button">&laquo; Previous</a>
+                <!-- <a href="#" onclick="init();" class="exp1" data-value="1" >Previous</a> -->
+                <!-- <script src="js/job_distribution/job-dist-lowest.js"></script> -->
                 <a href="page-3.html" class="button">Next &raquo;</a>
+                <!-- <a href="page-3.html" onclick="init();" class="exp1" data-value="1" >Next</a> -->
+                <!-- <a href="page-3.html" onclick="init();" class="exp1" data-value="1" >Next</a> -->
+                <!-- <script src="js/job_distribution/job-dist-lowest.js"></script> -->
             </ul>
-            <!-- <ul class='nav-items'>
-                <a href="index.html" class="round-button">&#8249;</a>
-                <a href="page-3.html" class="round-button">&#8250;</a>
-            </ul> -->
         <!-- =========================== -->
         </div>
 
         
-        <div class="canvas">
+        <div id = 'svg' class="canvas">
             <h3> Mean Salary in USD ($) Trends Based on Experience Levels</h3>
+            
+            <!-- <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"> -->
+            <!-- <input type="checkbox" checked="checked" class = "exp1" value="1" onclick="init()">
+            <label for="exp"> Entry-level Position</label><br>
+            <script src="js/job_distribution/job-dist-highest.js"></script> -->
 
             <svg width=300 height=300 style="display: block; margin: auto"> </svg>
-            <script src="js/job_distribution/job-dist-highest.js"></script>
+            <!-- <script src="js/job_distribution/job-dist-highest.js"></script> -->
+            <!-- <script src="js/job_distribution/job-dist-lowest.js"></script> -->
+            <script src="js/job_distribution/low-EN.js"></script>
         </div>  
     </body>
 
