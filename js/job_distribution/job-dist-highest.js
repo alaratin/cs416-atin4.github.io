@@ -19,17 +19,16 @@ async function init() {
     var all_remote = document.querySelector('.all_remo').checked;
 
     var us_flag = document.querySelector('.us').checked;
-    var can_flag = document.querySelector('.can').checked;
+    // var can_flag = document.querySelector('.can').checked;
     // var ge_flag = document.querySelector('.ger').checked;
-    var uk_flag = document.querySelector('.uk').checked;
     var all_count = document.querySelector('.all_count').checked;
-    console.log(us_flag,can_flag,uk_flag,all_count)
     
     
     // ================================================= GROUPING ===================================================
     var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE");
     var data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI");
     var data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN");
+    // ================================================= GROUPING ===================================================
     var svg = d3.select("svg");
 
     if(!all_flag){
@@ -81,24 +80,10 @@ async function init() {
             data_MI = data_MI.filter(d=>d.company_location == "US");
             data_EN = data_EN.filter(d=>d.company_location == "US");
         }
-        // else if(ge_flag){
-        //     svg.selectAll("*").remove();
-        //     data_SE = data_SE.filter(d=>d.company_location == "DE");
-        //     data_MI = data_MI.filter(d=>d.company_location == "DE");
-        //     data_EN = data_EN.filter(d=>d.company_location == "DE");
-        // }
-        else if(can_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.company_location == "CA");
-            data_MI = data_MI.filter(d=>d.company_location == "CA");
-            data_EN = data_EN.filter(d=>d.company_location == "CA");
-        }
-        else if(uk_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.company_location == "GB");
-            data_MI = data_MI.filter(d=>d.company_location == "GB");
-            data_EN = data_EN.filter(d=>d.company_location == "GB");
-        }
+        
+    }
+    if(all_count && all_remote && all_count){
+        svg.selectAll("*").remove();
     }
 
     
@@ -135,9 +120,7 @@ async function init() {
                         d3.max(grouped_data_SE, d=>d.mean_salary)
     ]);
     const ys = d3.scaleLinear().domain([0, max_val_salary]).range([height, 0]);
-        // grouped_data_SE, d=>d.mean_salary)]).range([height, 0]);
-    
-    
+        
     const line = d3.line()
         .x(function(d) {return xs(d.work_year);})
         .y(function(d) {return ys(d.mean_salary);})
@@ -304,7 +287,6 @@ async function init() {
         .attr('stroke', 'steelblue')
         .attr('stroke-width', 1.5)
         .attr('d', line);
-    
         
     d3.select('svg')
         .append("g")
@@ -330,22 +312,23 @@ async function init() {
                 .data(legend_Dict)
                 .enter().append("g")
                 .attr("class", "legend")
-                .attr("transform", (d, i) => "translate(15,"+(25*i)+")");
+                // .attr("transform", (d, i) => "translate(15,"+(25*i)+")");
+                .attr("transform", (d, i) => "translate("+(200*i)+",0)");
     
             legend.append("rect")
-                .attr('x', width/2 - 25)
+                .attr('x', width/2 - 150)
                 // .attr('y', height-40)
-                .attr('y', 20)
-                .attr("width", 15)
-                .attr("height", 15)
+                .attr('y', 40)
+                .attr("width", 12)
+                .attr("height", 12)
                 .style("fill", d => d.color);
     
     
             legend.append("text")
-                .attr("x", width/2)
+                .attr("x", width/2 - 130)
                 // .attr('y', height-32)
-                .attr("y", 27)
-                .attr("dy", ".30em")
+                .attr("y", 50)
+                .attr("dy", ".10em")
                 .style("text-anchor", "start")
                 .text(d => d.label);
     // ==================================================================================

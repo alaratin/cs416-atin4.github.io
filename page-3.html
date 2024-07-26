@@ -33,19 +33,53 @@
                 Note that you can access further information regarding mean salaries per experience level in Data Scientist positions as you hover
                 as you hover over the chart throughout the years. 
             </p>
-            <i class="fa fa-home"></i>
             <div>
                 <!-- @ NAVIGATION ITEM LOCATION -->
                  <ul class='nav-items'>
                      <a href="page-2.html" class="button">&laquo; Previous</a>
-                     <a href="page-4.html" class="button">Next &raquo;</a>
-                 </ul>
+                     <a href="index.html" class="button">Home</a>
+                    </ul>
              </div>
 
             <div class="canvas">
                 <h3> Mean Salary in USD ($) Trends Based on Experience Levels</h3>
+
+                <div class="container">
+                    <h4> Company Size Selection </h4>
+                    <input type="radio" name = "comp" class = "small" value="1" onclick="init()">
+                    <label for="small"> Small-Sized Companies </label><br>
+                    <input type="radio" class = "mid" name = "comp" value="1" onclick="init()">
+                    <label for="mid"> Mid-Sized Companies</label><br>
+                    <input type="radio" class = "large" name = "comp" value="1" onclick="init()">
+                    <label for="large"> Large-Sized Companies </label><br>
+                    <input type="radio" checked="checked"  class = "all" name = "comp" value="1" onclick="init()">
+                    <label for="all"> All-sized Companies </label><br>
+                </div>
+
+                <div class="container">
+                    <h4> Remote Time Selection </h4>
+                    <input type="radio" name = "emp" class = "zero" value="1" onclick="init()">
+                    <label for="zero"> 0% </label><br>
+                    <input type="radio" class = "fifty" name = "emp" value="1" onclick="init()">
+                    <label for="fifty"> 50%</label><br>
+                    <input type="radio" class = "hundred" name = "emp" value="1" onclick="init()">
+                    <label for="hundred"> 100% </label><br>
+                    <input type="radio" checked="checked"  class = "all_remo" name = "emp" value="1" onclick="init()">
+                    <label for="all_remo"> All-type Remote </label><br>
+                </div>
+
+                <div class="container">
+                    <h4> Company Location Selection </h4>
+                    <input type="radio" name = "loc" class = "us" value="1" onclick="init()">
+                    <label for="us"> United States of America </label><br>
+                    <input type="radio" checked="checked" class = "all_count" name = "loc" value="1" onclick="init()">
+                    <label for="all_count"> All Countries </label><br>
+                    <label for="all_count" style="color: white;"> None </label><br>
+                    <label for="all_count" style="color: white;"> None </label><br>
+                </div>
+
                 <svg width=300 height=300 style="display: block; margin: auto"> </svg>
-                <script src="js/job_distribution/low-MI.js"></script>
+                <script src="js/job_distribution/job-dist-highest.js"></script>
             </div>
         </body>
 </html>

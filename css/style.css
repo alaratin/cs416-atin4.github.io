@@ -10,7 +10,7 @@ h3{
 }
 h1 { margin-bottom: 0.7em; font-size: 2.441em; font-family: "Times New Roman", serif; text-align: center;}
 /* header  {background-image: linear-gradient(to bottom, #ced2f0, #a5a0e2);} */
-header  {background-image: linear-gradient(to bottom, #dbac82, #844a07);}
+header  {background-image: linear-gradient(to right, #dbac82, #844a07);}
 
 
 /* ==================== Navigation Panel ================== */
@@ -22,27 +22,26 @@ a {
 
 
 .nav-items{
-    margin: auto;
+    /* margin: auto; */
     display: flex;
-    justify-content: right;
+    justify-content: center;
 }
 /* ===================== BUTTON STYLING ================= */
 .button{
-    background-color: rgb(242, 247, 248);
+    background-color: #dbac82;
     color: black;
     border-color: black;
     border-style: double;
-}
-
-.exp2{
-    background-color: rgb(242, 247, 248);
-    color: black;
-    border-color: black;
-    border-style: double;
+    display: inline-block;
+    font: 400 1em 'Times New Roman';
+    border-color: rgb(122, 91, 39);
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    width: 120px;
+    text-align: center;
 }
 
 .button:hover{
-    background-color: rgb(127, 214, 255);
+    background-color: rgb(249, 247, 102);
 }
 
 
@@ -70,8 +69,10 @@ a {
     padding-top: 0%;    
     display: inline-block;
     margin-right: 5%;
-    margin-left: 2%;
+    margin-left: 10%;
+    
 }
+
 
 h4{
     /* background-image: linear-gradient(to left, #553c9a, #b393d3); */
