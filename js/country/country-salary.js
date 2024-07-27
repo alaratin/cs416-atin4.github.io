@@ -19,7 +19,13 @@ function getData(data, index=0){
 
     // @ Selected country is omitted due to having single datapoint in the dataset, causing inaccurate representation for 
     // mean salary display for the user.
-    var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.work_year === year_val && d.company_location !== "IL"); 
+    // var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.work_year === year_val && d.company_location !== "IL"); 
+    var data_SE = data.filter(d => d.work_year === year_val 
+        && d.company_location !=="IL" &&  d.company_location !=="IR" &&  d.company_location !=="IQ"
+          && d.company_location !=="AL" &&  d.company_location !=="BO" &&  d.company_location !=="CL"
+            &&  d.company_location !=="CN" &&  d.company_location !=="CR" && d.company_location !=="DZ" 
+              &&  d.company_location !=="DK" &&d.company_location !=="MD" && d.company_location !=="MK"
+                  && d.company_location !=="MT" && d.company_location !=="NZ" && d.company_location !=="VN"); 
     
     const projection = d3.geoNaturalEarth1();
 
@@ -101,6 +107,7 @@ function getData(data, index=0){
       "NL": "Netherlands",
       "NZ": "New Zealand",
 
+      "PH": "Philippines",
       "PK": "Pakistan",
       "PL": "Poland",
       "PR": "Puerto Rico",
@@ -143,7 +150,6 @@ const color = d3.scaleSequential(d3.interpolateViridis)
       .domain([0, d3.max(grouped_data_SE, d => d.mean_salary)]);
 
 const countryDataMap = new Map(grouped_data_SE.map(d => [d.country_loc, d.mean_salary]));
-console.log("COUNTRY",countryDataMap)
 
   if(!window.draw_flag){
     drawCanvas(countryDataMap,path,color, index)
@@ -156,10 +162,17 @@ console.log("COUNTRY",countryDataMap)
         const salary = countryDataMap.get(d.properties.name) || 0;
         return salary>0 ? color(salary) : "#4b5563";    
       });
+
+      d3.select('svg')
+      .selectAll(".country")
+        .select("title")
+        .text(d => {
+          const count = countryDataMap.get(d.properties.name) || 0;
+          return `Mean Salary in ${d.properties.name}: $ ${count}`;
+        });
       
       const countryDataMap_filtered = new Map(Array.from(countryDataMap).filter
       (([key,value]) => value > 0).sort((a,b) => d3.descending(a[1], b[1])));
-      console.log("COUNTRY-VERY",countryDataMap_filtered)
 
 
       d3.select("svg").selectAll(".legend").select("rect")
@@ -169,12 +182,11 @@ console.log("COUNTRY",countryDataMap)
             return salary>0 ? color(salary) : "#000"
         });
       
+        names_only = Array.from(countryDataMap_filtered.keys());
+
         d3.select("svg").selectAll(".legend").select("text")
-        .data(countryDataMap_filtered)
-
-        .text(([name, value]) => "$" + countryDataMap_filtered.get(name).toFixed(2));
-      
-
+          .data(names_only)
+          .text(d => d);
     
     setTimeout(() => {
         if (index == 3){
@@ -184,8 +196,9 @@ console.log("COUNTRY",countryDataMap)
         else{ 
           getData(data, index + 1);
         }
-      }, 5000)
-  }
+      }, 3000)
+      
+    }
 
 
 }
@@ -194,6 +207,8 @@ console.log("COUNTRY",countryDataMap)
 // ================================================ DRAW & PLOT ==================================================
 // ===============================================================================================================
 function drawCanvas(countryDataMap, path, color, index){
+
+  
   d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(topology => {
     const geojson = topojson.feature(topology, topology.objects.countries).features;
     d3.select("svg")
@@ -207,31 +222,39 @@ function drawCanvas(countryDataMap, path, color, index){
               const salary = countryDataMap.get(d.properties.name) || 0;
               // return salary>0 ? color(salary) : "#818589";
               return salary>0 ? color(salary) : "#4b5563";
+            })
+            .on('mouseover', function (d, i) {
+              d3.select(this).transition()
+                   .duration('50')
+                   .attr('opacity', '.3');
+            })
+            .on('mouseout', function (d, i) {
+              d3.select(this).transition()
+                   .duration('50')
+                   .attr('opacity', '1');
             });
-  
     d3.select('svg')
       .selectAll(".country")
         .append("title")
         .text(d => {
           const count = countryDataMap.get(d.properties.name) || 0;
-          return `Mean Salary for Data Scientist Job in ${d.properties.name}: $ ${count}`;
+          return `Mean Salary in ${d.properties.name}: $ ${count}`;
         });
      
-  var width = 500;
-  var height = 500;
-
   const countryDataMap_filtered = new Map(Array.from(countryDataMap).filter
   (([key,value]) => value > 0).sort((a,b) => d3.descending(a[1], b[1])));
+
 
   const legend = d3.select('svg').selectAll(".legend")
     .data(countryDataMap_filtered)
     .enter().append("g")
     .attr("class", "legend")
-    .attr("transform", (d, i) => "translate(15,"+(25*i)+")");
+    .attr("transform", (d, i) => "translate(20,"+(15*i)+")");
 
   legend.append("rect")
-    .attr('x', width/2 - 150)
-    .attr('y', 220)
+    // .attr('x', width/2 - 150)
+    .attr('x', 0)
+    .attr('y', 200)
     .attr("width", 12)
     .attr("height", 12)
     .style("fill", ([name,value]) => {
@@ -239,13 +262,21 @@ function drawCanvas(countryDataMap, path, color, index){
         return salary>0 ? color(salary) : "#000"   
     });
 
-  legend.append("text")
-    .attr("x", width/2 - 130)
-    .attr("y", 230)
-    .attr("dy", ".10em")
-    .style("text-anchor", "start")
-    .text(([name, value]) => "$" + countryDataMap_filtered.get(name).toFixed(2));
-
+  // legend.append("text")
+  //   .attr("x", width/2 - 130)
+  //   .attr("y", 230)
+  //   .attr("dy", ".10em")
+  //   .style("text-anchor", "start")
+  //   .text(([name, value]) => "$" + countryDataMap_filtered.get(name).toFixed(2));
+  // });
+    names_only = Array.from(countryDataMap_filtered.keys());
+    legend.append("text")
+      .attr("x",30)
+      .attr("y", 210)
+      .attr("dy", ".10em")
+      .style("text-anchor", "start")
+      .data(names_only)
+      .text(d => d);
 
   });
 
