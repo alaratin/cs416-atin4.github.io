@@ -25,9 +25,11 @@ async function init() {
     
     
     // ================================================= GROUPING ===================================================
-    var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE");
-    var data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI");
-    var data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN");
+    // @ Selected country is omitted due to having single datapoint in the dataset, causing inaccurate representation for 
+    // mean salary display for the user.
+    var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE" && d.company_location !== "IL");
+    var data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI" && d.company_location !== "IL");
+    var data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN" && d.company_location !== "IL");
     // ================================================= GROUPING ===================================================
     var svg = d3.select("svg");
 

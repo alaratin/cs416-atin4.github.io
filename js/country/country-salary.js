@@ -17,7 +17,9 @@ function getData(data, index=0){
     const year_val = year_arr[index]
     console.log(year_val)
 
-    var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.work_year === year_val); 
+    // @ Selected country is omitted due to having single datapoint in the dataset, causing inaccurate representation for 
+    // mean salary display for the user.
+    var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.work_year === year_val && d.company_location !== "IL"); 
     
     const projection = d3.geoNaturalEarth1();
 
@@ -152,7 +154,7 @@ console.log("COUNTRY",countryDataMap)
     d3.select("svg").selectAll("path")
       .style("fill", d => {
         const salary = countryDataMap.get(d.properties.name) || 0;
-        return salary>0 ? color(salary) : "#818589";    
+        return salary>0 ? color(salary) : "#4b5563";    
       });
       
       const countryDataMap_filtered = new Map(Array.from(countryDataMap).filter
@@ -203,7 +205,8 @@ function drawCanvas(countryDataMap, path, color, index){
             .attr("class", "country")
             .style("fill", d => {
               const salary = countryDataMap.get(d.properties.name) || 0;
-              return salary>0 ? color(salary) : "#818589";
+              // return salary>0 ? color(salary) : "#818589";
+              return salary>0 ? color(salary) : "#4b5563";
             });
   
     d3.select('svg')
