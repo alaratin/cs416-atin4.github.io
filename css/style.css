@@ -60,6 +60,7 @@ a {
 .canvas{
     border: black;
     border-style:double;
+    /* background-color: #e4ba96; */
 }
 .container {
     border-style: double;
