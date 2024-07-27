@@ -17,6 +17,8 @@ function getData(data, index=0){
     const year_val = year_arr[index]
     console.log(year_val)
 
+
+
     // @ Selected country is omitted due to having single datapoint in the dataset, causing inaccurate representation for 
     // mean salary display for the user.
     // var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.work_year === year_val && d.company_location !== "IL"); 
@@ -152,10 +154,22 @@ const color = d3.scaleSequential(d3.interpolateViridis)
 const countryDataMap = new Map(grouped_data_SE.map(d => [d.country_loc, d.mean_salary]));
 
   if(!window.draw_flag){
+    d3.select("svg").selectAll('.year-id').remove()
+    d3.select("svg").append('text')
+    .attr("class", "year-id")
+    .attr('x', 22)
+    .attr('y', 150)
+    .text(`Shown Year: ${year_val}`);
     drawCanvas(countryDataMap,path,color, index)
     setTimeout(() => {getData(data, index + 1)},5000);
   }
   else{
+    d3.select("svg").selectAll('.year-id').remove()
+    d3.select("svg").append('text')
+    .attr("class", "year-id")
+    .attr('x', 22)
+    .attr('y', 150)
+    .text(`Shown Year: ${year_val}`);
 
     d3.select("svg").selectAll("path")
       .style("fill", d => {
@@ -200,7 +214,6 @@ const countryDataMap = new Map(grouped_data_SE.map(d => [d.country_loc, d.mean_s
       
     }
 
-
 }
 
 // ===============================================================================================================
@@ -208,7 +221,11 @@ const countryDataMap = new Map(grouped_data_SE.map(d => [d.country_loc, d.mean_s
 // ===============================================================================================================
 function drawCanvas(countryDataMap, path, color, index){
 
-  
+  // d3.select("svg").append('text')
+  // .attr('x', 22)
+  // .attr('y', 150)
+  // .text(`Shown Year: 2020`);
+
   d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(topology => {
     const geojson = topojson.feature(topology, topology.objects.countries).features;
     d3.select("svg")
@@ -262,13 +279,6 @@ function drawCanvas(countryDataMap, path, color, index){
         return salary>0 ? color(salary) : "#000"   
     });
 
-  // legend.append("text")
-  //   .attr("x", width/2 - 130)
-  //   .attr("y", 230)
-  //   .attr("dy", ".10em")
-  //   .style("text-anchor", "start")
-  //   .text(([name, value]) => "$" + countryDataMap_filtered.get(name).toFixed(2));
-  // });
     names_only = Array.from(countryDataMap_filtered.keys());
     legend.append("text")
       .attr("x",30)
@@ -276,7 +286,8 @@ function drawCanvas(countryDataMap, path, color, index){
       .attr("dy", ".10em")
       .style("text-anchor", "start")
       .data(names_only)
-      .text(d => d);
+      .text(d => d)
+    
 
   });
 
