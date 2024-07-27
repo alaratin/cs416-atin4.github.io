@@ -11,13 +11,14 @@
         <script src='https://d3js.org/d3.v7.min.js'></script>
         <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
         <!-- <script src="js/d3-annotation.min.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
      </head>
  
 
      <body onload="init()">
         <header role = 'banner'>
             <div>
-                <h1> What Did COIVD-19 Do To Our Data Scientists:  </h1>
+                <h1> What Did COVID-19 Do To Our Data Scientists: </h1>
                 <h1> A Roadmap from 2020 to 2023 </h1>            
             </div>
 
@@ -43,7 +44,7 @@
 
             <div class="canvas">
                 <h3> Mean Salary in USD ($) Trends Based on Experience Levels</h3>
-
+            
                 <div class="container">
                     <h4> Company Size Selection </h4>
                     <input type="radio" name = "comp" class = "small" value="1" onclick="init()">
@@ -78,7 +79,10 @@
                     <label for="all_count" style="color: #e0f2fe;"> None </label><br>
                 </div>
 
+                <div id="canvas_id">
                 <svg width=300 height=300 style="display: block; margin: auto"> </svg>
+                </div>
+                <!-- <script src="js/job_distribution/job-dist-highest.js"></script> -->
                 <script src="js/job_distribution/job-dist-highest.js"></script>
             </div>
         </body>

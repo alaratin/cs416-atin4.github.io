@@ -27,9 +27,12 @@ async function init() {
     // ================================================= GROUPING ===================================================
     // @ Selected country is omitted due to having single datapoint in the dataset, causing inaccurate representation for 
     // mean salary display for the user.
-    var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE" && d.company_location !== "IL");
-    var data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI" && d.company_location !== "IL");
-    var data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN" && d.company_location !== "IL");
+    // var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE" && d.company_location !== "IL");
+    // var data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI" && d.company_location !== "IL");
+    // var data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN" && d.company_location !== "IL");
+    var data_SE = data.filter(d => d.experience_level === "SE" && d.company_location !== "IL");
+    var data_MI = data.filter(d => d.experience_level === "MI" && d.company_location !== "IL");
+    var data_EN = data.filter(d => d.experience_level === "EN" && d.company_location !== "IL");
     // ================================================= GROUPING ===================================================
     var svg = d3.select("svg");
 
@@ -214,6 +217,26 @@ async function init() {
     function displayData(grouped_data_EN, grouped_data_MI, grouped_data_SE, 
                     makeAnnotations_EN, makeAnnotations_MI, makeAnnotations_SE, width, height, margin, line,xs,ys)
     {
+    
+    var tooltip2 = d3.select("#canvas_id")
+        .append("div")
+        .attr("id", "tooltip_id")
+        .style("position", "absolute")
+        .style("visibility", "hidden")
+        .style("background-color", "#bae6fd")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "50px")
+        .style("border-style", "dotted")
+        .style("width", "fit-content")
+        .style("font-size", "0.9em")
+        .style("padding", "10px")
+        .style("opacity", "0.8")
+        .html("<p>I'm a tooltip written in HTML</p>");
+
+    d3.select("#tooltip_id")
+        .style("visibility", "hidden")
+
     d3.select("svg")
         .attr("width", width + 2*margin)
         .attr("height", height + 2*margin)
@@ -227,20 +250,41 @@ async function init() {
         .attr("class", "line") 
         .attr('fill', 'none')
         .attr('stroke', 'red')
-        .attr('stroke-width', 1.5)
-        .attr('d', line);
-
+        .attr('stroke-width', 3)
+        .attr('d', line)
+        
+        .on('mouseover', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '.3');
+          })
+          .on('mouseout', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '1');
+          });
+          
     d3.select('svg')
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
         .selectAll(".dot")
         .data(grouped_data_EN)
         .enter()
-        .append("circle") // Uses the enter().append() method
-        .attr("class", "dot") // Assign a class for styling
+        .append("circle") 
+        .attr("class", "dot_class") 
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
-        .attr("r", 2);
+        .attr("r", 2.5)
+        .on("mouseover", (evt, d) => {
+            const [mx, my] = d3.pointer(evt);
+            d3.select("#tooltip_id")
+            .style("left", (evt.pageX + 30) + "px") 
+            .style("top", (evt.pageY) + "px")
+            .style("visibility", "visible")
+            .html(`<p align="center"> <b> Mean Salary in Year ${d.work_year} <br></br>is $${d.mean_salary.toFixed(2)}</b></p>`);
+          })
+        .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
+
 
     // ==================================================================================
     
@@ -258,8 +302,18 @@ async function init() {
         .attr("class", "line") 
         .attr('fill', 'none')
         .attr('stroke', 'green')
-        .attr('stroke-width', 1.5)
-        .attr('d', line);
+        .attr('stroke-width', 3)
+        .attr('d', line)
+        .on('mouseover', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '.3');
+          })
+          .on('mouseout', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '1');
+          });;
     
     d3.select('svg')
         .append("g")
@@ -271,7 +325,18 @@ async function init() {
         .attr("class", "dot") // Assign a class for styling
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
-        .attr("r", 2);
+        .attr("r", 2.5)
+        .on("mouseover", (evt, d) => {
+            const [mx, my] = d3.pointer(evt);
+            d3.select("#tooltip_id")
+            .style("left", (evt.pageX + 30) + "px") 
+            .style("top", (evt.pageY) + "px")
+            .style("visibility", "visible")
+            .html(`<p align="center"> <b> Mean Salary in Year ${d.work_year} <br></br>is $${d.mean_salary.toFixed(2)}</b></p>`);
+          })
+        .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
+        // .on("mouseout", function(){return tooltip2.style("display", "none");});
+
     // ==================================================================================
     // ================================= SENIOR_LEVEL EXP ===============================
     d3.select("svg")
@@ -287,8 +352,19 @@ async function init() {
         .attr("class", "line") 
         .attr('fill', 'none')
         .attr('stroke', 'steelblue')
-        .attr('stroke-width', 1.5)
-        .attr('d', line);
+        .attr('stroke-width', 3)
+        .attr('d', line)
+        
+        .on('mouseover', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '.3');
+          })
+          .on('mouseout', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '1');
+          });;
         
     d3.select('svg')
         .append("g")
@@ -300,7 +376,16 @@ async function init() {
         .attr("class", "dot") // Assign a class for styling
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
-        .attr("r", 2);
+        .attr("r", 2.5)
+        .on("mouseover", (evt, d) => {
+            const [mx, my] = d3.pointer(evt);
+            d3.select("#tooltip_id")
+            .style("left", (evt.pageX + 30) + "px") 
+            .style("top", (evt.pageY) + "px")
+            .style("visibility", "visible")
+            .html(`<p align="center"> <b> Mean Salary in Year ${d.work_year} <br></br>is $${d.mean_salary.toFixed(2)}</b></p>`);
+          })
+        .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
 
     // ==================================================================================
     // ============================== LEGENDS SETTINGS ==================================
@@ -339,7 +424,11 @@ async function init() {
     d3.select("svg")
         .append("g")
         .attr("transform", "translate("+margin+", "+margin+")")
-        .call(d3.axisLeft(ys));
+        .call(d3.axisLeft(ys))
+        .call(g => g.selectAll(".tick line").clone()
+        .attr("x2",width)
+        .attr("stroke-opacity",0.1)
+);
     
     d3.select("svg")
         .append("g")

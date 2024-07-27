@@ -1,18 +1,21 @@
 
 
+html{
+    background-color: #e0f2fe;
+}
 
 /*==================== Header Styling ======================= */
-h1, h2{font-weight: bold; line-height: 1.1; margin: 20px 0 10px 0;}
+h1, h2{font-weight: bold; line-height: 1.1; margin: 10px 0 10px 0;}
 h3{ 
     padding-left: 0.5em;
     text-decoration: underline;
     /* color: rgb(103, 59, 14); */
 }
-h1 { margin-bottom: 0.7em; font-size: 2.441em; font-family: "Times New Roman", serif; text-align: center;}
+h1 {padding: 5px 0 5px 0; font-size: 2.441em; font-family: "Times New Roman", serif; text-align: center; color: white;}
 /* header  {background-image: linear-gradient(to bottom, #ced2f0, #a5a0e2);} */
 header  {background-image: linear-gradient(to right, #7dd3fc, #0284c7);}
 
-
+p {font-size: 1em;}
 /* ==================== Navigation Panel ================== */
 a {
     text-decoration: none;
@@ -28,26 +31,23 @@ a {
 }
 /* ===================== BUTTON STYLING ================= */
 .button{
-    background-color: #8fdafc;
-    color: black;
+    background-color: #64c8f8;
+    color: white;
     border-color: black;
     border-style: double;
     display: inline-block;
     font: 400 1em 'Times New Roman';
-    border-color: rgb(122, 91, 39);
+    border-color: #4cbbf2;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     width: 120px;
     text-align: center;
+    border-radius: 6px;
 }
 
 .button:hover{
     background-color:#2a93c7;
 }
 
-html{
-    background-color: #e0f2fe;
-
-}
 /* ========================================================== */
 .canvas{
     border: black;
@@ -67,7 +67,11 @@ html{
     
 }
 
-
+.year-text{
+    color: #0284c7;
+    fill: #2a93c7;
+    background-color: black;
+}
 h4{
     /* background-image: linear-gradient(to left, #553c9a, #b393d3); */
     text-align: center;

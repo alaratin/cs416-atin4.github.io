@@ -13,9 +13,12 @@ async function init() {
     // const data = await d3.csv("https://raw.githubusercontent.com/alaratin/cs416-atin4.github.io/main/data/ds_salaries.csv");
     const data = await d3.csv("https://raw.githubusercontent.com/JorgeMiGo/Data-Science-Salaries-2023/main/Dataset/ds_salaries.csv");
         
-    const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE");
-    const data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI");
-    const data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN");
+    // const data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE");
+    // const data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI");
+    // const data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN");
+    const data_SE = data.filter(d => d.experience_level === "SE");
+    const data_MI = data.filter(d => d.experience_level === "MI");
+    const data_EN = data.filter(d => d.experience_level === "EN");
         
     const grouped_data_SE =  Array.from(d3.group(data_SE, d => d.work_year),
     ([key, values]) => ({
@@ -39,7 +42,6 @@ async function init() {
     grouped_data_MI.sort((a,b) => d3.ascending(a.work_year, b.work_year));
     grouped_data_EN.sort((a,b) => d3.ascending(a.work_year, b.work_year));
     // ===============================================================================================================
-
     // ===============================================================================================================
     // ============================================= LINE CHART DEFINITION ===========================================
     // ===============================================================================================================
@@ -64,13 +66,13 @@ async function init() {
     const annotations_EN = [
         {
             note: {
-                label: "Lowest salary with $54,983.33",
+                label: "Lowest salary with $54,905.25",
                 title: "Entry Level",
                 wrap: 100
             },
             type:d3.annotationCalloutCircle,
-            x: xs('2020'),
-            y: ys(54983.33),
+            x: xs('2021'),
+            y: ys(54905.25454545455),
             subject:{
                 radius: 10,
                 raiduspadding: 5,
@@ -83,13 +85,13 @@ async function init() {
     const annotations_MI = [
         {
             note: {
-                label: "Lowest salary with $71,256",
+                label: "Lowest salary with $82,116.93",
                 title: "Medium Level",
                 wrap: 100
             },
             type:d3.annotationCalloutCircle,
-            x: xs('2020'),
-            y: ys(71256),
+            x: xs('2021'),
+            y: ys(82116.93478260869),
             subject:{
                 radius: 10,
                 raiduspadding: 5,
@@ -103,19 +105,19 @@ async function init() {
     const annotations_SE = [
         {
             note: {
-                label: "Lowest salary with $87,071.25",
+                label: "Lowest salary with $126,085.36",
                 title: "Senior Level",
                 wrap: 100
             },
             type:d3.annotationCalloutCircle,
             x: xs('2021'),
-            y: ys(88071.25),
+            y: ys(126085.3561643835),
             subject:{
                 radius: 10,
                 raiduspadding: 5,
             },
-            dy: -100,
-            dx: 0,
+            dy: 40,
+            dx: -5,
             color: label_color
         }
     ];
@@ -129,14 +131,9 @@ async function init() {
             .annotations(annotations_SE);
     // ===============================================================================================================
 
-    // displayData(grouped_data_EN, grouped_data_MI, grouped_data_SE, 
-    //                 makeAnnotations_EN, makeAnnotations_MI, makeAnnotations_SE, width, height, margin, line,xs,ys,
-    //                     EN_flag, MI_flag, SE_flag )
-    
-    // ==============================================================================================================
     
     // ===============================================================================================================
-    // =============================================== ANNOTATIONS ===================================================
+    // ======================================== CREATE && DRAW SVG ===================================================
     // ===============================================================================================================
     d3.select("svg")
     .attr("width", width + 2*margin)
@@ -174,7 +171,10 @@ d3.select('svg')
     d3.select("svg")
         .append("g")
         .attr("transform", "translate("+margin+", "+margin+")")
-        .call(d3.axisLeft(ys));
+        .call(d3.axisLeft(ys))
+        .call(g => g.selectAll(".tick line").clone()
+            .attr("x2",width)
+            .attr("stroke-opacity",0.1));
     
     d3.select("svg")
         .append("g")
@@ -187,8 +187,10 @@ d3.select('svg')
         .attr("transform", "translate(175,30)")
         .text("Work Years");
     // ===============================================================================================================
-    
+    // ===============================================================================================================
     // ========================================== AXES LABELING ======================================================
+    // ===============================================================================================================
+
     d3.select('svg').append("text")
               .attr("text-anchor", "end")
               .attr("x", 200)
@@ -203,23 +205,26 @@ d3.select('svg')
               .text("Mean Salary in USD ($)");
     // ===============================================================================================================
     
+    // ===============================================================================================================
+    // =============================================== ANNOTATIONS ===================================================
+    // ===============================================================================================================
     var label_color= d3.color("brown").darker(); 
     const annotations_EN_high = [
         {
             note: {
-                label: "Highest salary with $81,272.45",
+                label: "Highest salary with $95,283.97",
                 title: "Entry Level",
                 wrap: 100
             },
             type:d3.annotationCalloutCircle,
-            x: xs('2022'),
-            y: ys(81272.44827586207),
+            x: xs('2023'),
+            y: ys(95283.96610169491),
             subject:{
                 radius: 10,
                 raiduspadding: 5,
             },
             dy: 100,
-            dx: -25,
+            dx: -100,
             color: label_color
         }
     ];
@@ -227,38 +232,38 @@ d3.select('svg')
     const annotations_MI_high = [
         {
             note: {
-                label: "Highest salary with $104,014.79",
+                label: "Highest salary with $116,297.60",
                 title: "Medium Level",
                 wrap: 100
             },
             type:d3.annotationCalloutCircle,
             x: xs('2023'),
-            y: ys(104014.78723404255),
+            y: ys(116297.596875),
             subject:{
                 radius: 10,
                 raiduspadding: 5,
             },
-            dy: -50,
-            dx: -50,
+            dy: 250,
+            dx: -25,
             color: label_color
         }
     ];
     const annotations_SE_high = [
         {
             note: {
-                label: "Highest salary with $172,916.25",
+                label: "Highest salary with $159,568.93",
                 title: "Senior Level",
                 wrap: 100
             },
             type:d3.annotationCalloutCircle,
-            x: xs('2020'),
-            y: ys(172916.25),
+            x: xs('2023'),
+            y: ys(159568.9285159285),
             subject:{
                 radius: 10,
                 raiduspadding: 5,
             },
-            dy: 25,
-            dx: 75,
+            dy: 70,
+            dx: -70,
             color: label_color
         }
     ];
@@ -274,11 +279,11 @@ d3.select('svg')
 
     const button_exp2 = document.getElementById('exp2')
     var two_done = 'false'
-    var clicked = 0;
+    var clicked_next = 0;
     button_exp2.addEventListener('click', function() {
         two_done = 'true' 
-        clicked = clicked + 1;
-        if(clicked == "1"){
+        clicked_next = clicked_next + 1;
+        if(clicked_next == "1"){
             d3.select("svg")
                 .append("g")
                 .attr("transform", "translate("+margin+","+margin+")")
@@ -304,7 +309,7 @@ d3.select('svg')
                 .attr("cy", d => ys(d.mean_salary))
                 .attr("r", 2);
         }
-        else if(clicked == "2"){
+        else if(clicked_next == "2"){
             d3.select("svg")
             .attr("width", width + 2*margin)
             .attr("height", height + 2*margin)
@@ -334,7 +339,7 @@ d3.select('svg')
             .attr("cy", d => ys(d.mean_salary))
             .attr("r", 2);
         }
-        else if(clicked == "3"){
+        else if(clicked_next == "3"){
             d3.selectAll(".annotations").remove()
 
             d3.select("svg")
@@ -368,6 +373,8 @@ d3.select('svg')
         }
     });
     
+
+    
     // ==================================================================================
     // ============================== LEGENDS SETTINGS ==================================
     // ==================================================================================
@@ -382,12 +389,10 @@ d3.select('svg')
                     .data(legend_Dict)
                     .enter().append("g")
                     .attr("class", "legend")
-                    // .attr("transform", (d, i) => "translate(15,"+(25*i)+")");
                     .attr("transform", (d, i) => "translate("+(200*i)+",0)");
 
     legend.append("rect")
         .attr('x', width/2 - 150)
-        // .attr('y', height-40)
         .attr('y', 40)
         .attr("width", 12)
         .attr("height", 12)
@@ -396,7 +401,6 @@ d3.select('svg')
 
     legend.append("text")
         .attr("x", width/2 - 130)
-        // .attr('y', height-32)
         .attr("y", 50)
         .attr("dy", ".10em")
         .style("text-anchor", "start")

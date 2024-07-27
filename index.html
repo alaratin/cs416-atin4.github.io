@@ -9,8 +9,7 @@
         <link rel="stylesheet" href="css/style.css">
         <script src='https://d3js.org/d3.v7.min.js'></script>
         <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
-        <script src="https://unpkg.com/topojson-client@3"></script>     
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
+        <script src="https://d3js.org/topojson.v3.min.js"></script>  
     </head>
 
     <!-- @ MAP STRUCTURE STYLE -->
@@ -21,7 +20,6 @@
         }
     </style>
     <!-- ====================== -->
-    <div class="whole">
      <body onload="init()">
         <header role = 'banner'>
             <div>
@@ -49,7 +47,7 @@
         <div class="canvas">
             <h3> Worldmap of Data Sceintitst Mean Salary Distribution in USD ($) </h3>
 
-            <svg width=960 height=600 style="display: block; margin: auto"> </svg>
+            <svg width=1000 height=600 style="display: block; margin: auto"> </svg>
             <script src="js/country/country-salary.js"></script>
         </div>
     </body>
