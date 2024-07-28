@@ -17,22 +17,48 @@ async function init() {
     var hundred_flag = document.querySelector('.hundred').checked;
     var zero_flag = document.querySelector('.zero').checked;
     var all_remote = document.querySelector('.all_remo').checked;
+    
+    var absolute_flag = document.querySelector('.abs').checked;
+    var relative_flag = document.querySelector('.rel').checked;
+    
 
-    var us_flag = document.querySelector('.us').checked;
-    // var can_flag = document.querySelector('.can').checked;
-    // var ge_flag = document.querySelector('.ger').checked;
-    var all_count = document.querySelector('.all_count').checked;
-    
-    
+    if(relative_flag && (fifty_flag ||  mid_flag)){
+        let output = document.querySelector('.mid')
+        output.checked = false;
+
+        console.log("OUTPUT", output)
+        output.disabled = true
+
+        mid_flag = false;
+        all_flag = true;
+    }
+    else{
+        let output = document.querySelector('.mid')
+        output.disabled = false
+
+        small_flag = document.querySelector('.small').checked;
+        mid_flag = document.querySelector('.mid').checked;
+        large_flag = document.querySelector('.large').checked;
+        all_flag = document.querySelector('.all').checked;
+    }
+
+    if(relative_flag && zero_flag){
+        let output = document.querySelector('.small')
+        // let all = document.querySelector('.all_flag')
+        output.checked = false;
+        console.log("OUTPUT", output)
+        output.disabled = true
+        small_flag = false;
+    }
+    else{
+        let output = document.querySelector('.small')
+        output.disabled = false
+    }
+
     // ================================================= GROUPING ===================================================
-    // @ Selected country is omitted due to having single datapoint in the dataset, causing inaccurate representation for 
-    // mean salary display for the user.
-    // var data_SE = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "SE" && d.company_location !== "IL");
-    // var data_MI = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "MI" && d.company_location !== "IL");
-    // var data_EN = data.filter(d => d.job_title === "Data Scientist" && d.experience_level === "EN" && d.company_location !== "IL");
-    var data_SE = data.filter(d => d.experience_level === "SE" && d.company_location !== "IL");
-    var data_MI = data.filter(d => d.experience_level === "MI" && d.company_location !== "IL");
-    var data_EN = data.filter(d => d.experience_level === "EN" && d.company_location !== "IL");
+    var data_SE = data.filter(d => d.experience_level === "SE");
+    var data_MI = data.filter(d => d.experience_level === "MI");
+    var data_EN = data.filter(d => d.experience_level === "EN");
     // ================================================= GROUPING ===================================================
     var svg = d3.select("svg");
 
@@ -78,20 +104,10 @@ async function init() {
         }
     }
 
-    if(!all_count){
-        if(us_flag){
-            svg.selectAll("*").remove();
-            data_SE = data_SE.filter(d=>d.company_location == "US");
-            data_MI = data_MI.filter(d=>d.company_location == "US");
-            data_EN = data_EN.filter(d=>d.company_location == "US");
-        }
-        
-    }
-    if(all_count && all_remote && all_count){
+
+    if(all_remote){
         svg.selectAll("*").remove();
     }
-
-    
         
     const grouped_data_SE =  Array.from(d3.group(data_SE, d => d.work_year),
     ([key, values]) => ({
@@ -118,106 +134,101 @@ async function init() {
     grouped_data_EN.sort((a,b) => d3.ascending(a.work_year, b.work_year));
     // ===============================================================================================================
     // ============================================= LINE CHART DEFINITION============================================
-    const xs = d3.scaleLinear().domain(['2020','2023']).range([0,width]);
-    var max_val_salary = d3.max([
-                        d3.max(grouped_data_EN, d=>d.mean_salary),
-                        d3.max(grouped_data_MI, d=>d.mean_salary),
-                        d3.max(grouped_data_SE, d=>d.mean_salary)
-    ]);
-    const ys = d3.scaleLinear().domain([0, max_val_salary]).range([height, 0]);
+
+        const xs = d3.scaleLinear().domain(['2020','2023']).range([0,width]);
+        var max_val_salary = d3.max([
+                            d3.max(grouped_data_EN, d=>d.mean_salary),
+                            d3.max(grouped_data_MI, d=>d.mean_salary),
+                            d3.max(grouped_data_SE, d=>d.mean_salary)
+        ]);
+        const ys = d3.scaleLinear().domain([0, max_val_salary]).range([height, 0]);
+            
+    
+    
+        const line = d3.line()
+            .x(function(d) {return xs(d.work_year);})
+            .y(function(d) {return ys(d.mean_salary);})
+            .curve(d3.curveMonotoneX);
+
+
+
+    if(relative_flag){
+        const ys_new = d3.scaleLinear().domain([0, 4]).range([height, 0]);
+
+        const line_1 = (() => {
+            const starter_arr = grouped_data_EN.filter(d => d.work_year == '2020');
         
-    const line = d3.line()
-        .x(function(d) {return xs(d.work_year);})
-        .y(function(d) {return ys(d.mean_salary);})
-        .curve(d3.curveMonotoneX);
-    
-    // ===============================================================================================================
-    
-    console.log("En", grouped_data_EN)
-    console.log("MI", grouped_data_MI)
-    console.log("SE", grouped_data_SE)
-    
-    
-    // =============================================== ANNOTATIONS ================================================
-    var label_color= d3.color("brown").darker(); 
-    const annotations_EN = [
-        {
-            note: {
-                label: "Highest salary with $81,272.45",
-                title: "Entry Level",
-                wrap: 100
-            },
-            type:d3.annotationCalloutCircle,
-            x: xs('2022'),
-            y: ys(81272.44827586207),
-            subject:{
-                radius: 10,
-                raiduspadding: 5,
-            },
-            dy: 100,
-            dx: -25,
-            color: label_color
-        }
-    ];
-    const annotations_MI = [
-        {
-            note: {
-                label: "Highest salary with $104,014.79",
-                title: "Medium Level",
-                wrap: 100
-            },
-            type:d3.annotationCalloutCircle,
-            x: xs('2023'),
-            y: ys(104014.78723404255),
-            subject:{
-                radius: 10,
-                raiduspadding: 5,
-            },
-            dy: -50,
-            dx: -50,
-            color: label_color
-        }
-    ];
-    
-    const annotations_SE = [
-        {
-            note: {
-                label: "Highest salary with $172,916.25",
-                title: "Senior Level",
-                wrap: 100
-            },
-            type:d3.annotationCalloutCircle,
-            x: xs('2020'),
-            y: ys(172916.25),
-            subject:{
-                radius: 10,
-                raiduspadding: 5,
-            },
-            dy: 25,
-            dx: 75,
-            color: label_color
-        }
-    ];
-    // ----------------------------------------------------------------------
-    const makeAnnotations_EN = d3.annotation()
-            .annotations(annotations_EN);
-    
-    const makeAnnotations_MI = d3.annotation()
-            .annotations(annotations_MI);
-    const makeAnnotations_SE = d3.annotation()
-            .annotations(annotations_SE);
-    
-    displayData(grouped_data_EN, grouped_data_MI, grouped_data_SE, 
-                    makeAnnotations_EN, makeAnnotations_MI, makeAnnotations_SE, width, height, margin, line,xs,ys)
+            if (starter_arr.length === 0) {
+                return null; 
+            } else {
+                return d3.line()
+                    .x(function(d) { return xs(d.work_year); })
+                    .y(function(d) {
+                        const starter_val = starter_arr[0].mean_salary;        
+                        return ys_new(d.mean_salary / starter_val);
+                    })
+                    .curve(d3.curveMonotoneX);
+            }
+        })();
+
+        const line_2 = (() => {
+            const starter_arr = grouped_data_MI.filter(d => d.work_year == '2020');
+        
+            if (starter_arr.length === 0) {
+                return null; 
+            } else {
+                return d3.line()
+                    .x(function(d) { return xs(d.work_year); })
+                    .y(function(d) {
+                        const starter_val = starter_arr[0].mean_salary;
+                        console.log("hello", d.mean_salary / starter_val);
+        
+                        return ys_new(d.mean_salary / starter_val);
+                    })
+                    .curve(d3.curveMonotoneX);
+            }
+        })();
+        
+
+        // var deneme = grouped_data_SE.filter(d => d.work_year == '2020')
+        const line_3 = (() => {
+            const starter_arr = grouped_data_SE.filter(d => d.work_year == '2020');
+        
+            if (starter_arr.length === 0) {
+                return null; 
+            } else {
+                return d3.line()
+                    .x(function(d) { return xs(d.work_year); })
+                    .y(function(d) {
+                        const starter_val = starter_arr[0].mean_salary;        
+                        return ys_new(d.mean_salary / starter_val);
+                    })
+                    .curve(d3.curveMonotoneX);
+            }
+        })();
+
+        
+
+        displayData_rel(grouped_data_EN, grouped_data_MI, grouped_data_SE, 
+            width, height, margin, line_1, line_2, line_3,xs,ys_new)
+        
+    }
+
+    if(absolute_flag){
+
+        displayData(grouped_data_EN, grouped_data_MI, grouped_data_SE, 
+                       width, height, margin, line,xs,ys)
+    }
+
     }
     
     // ==============================================================================================================
     // ============================================ CANVAS SETTINGS ====================================================
     // ================================= ENTRY_LEVEL EXP =================================
-    function displayData(grouped_data_EN, grouped_data_MI, grouped_data_SE, 
-                    makeAnnotations_EN, makeAnnotations_MI, makeAnnotations_SE, width, height, margin, line,xs,ys)
+    function displayData(grouped_data_EN, grouped_data_MI, grouped_data_SE, width, height, margin, line,xs,ys)
     {
-    
+        d3.select("#ax").attr("opacity", 0.5);
+
     var tooltip2 = d3.select("#canvas_id")
         .append("div")
         .attr("id", "tooltip_id")
@@ -243,7 +254,6 @@ async function init() {
         
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        // .call(makeAnnotations_EN)
 
         .append('path')
         .datum(grouped_data_EN)
@@ -263,7 +273,7 @@ async function init() {
                  .duration('50')
                  .attr('opacity', '1');
           });
-          
+               
     d3.select('svg')
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
@@ -295,7 +305,6 @@ async function init() {
         
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        // .call(makeAnnotations_MI)
     
         .append('path')
         .datum(grouped_data_MI)
@@ -313,7 +322,7 @@ async function init() {
             d3.select(this).transition()
                  .duration('50')
                  .attr('opacity', '1');
-          });;
+          });
     
     d3.select('svg')
         .append("g")
@@ -321,8 +330,8 @@ async function init() {
         .selectAll(".dot")
         .data(grouped_data_MI)
         .enter()
-        .append("circle") // Uses the enter().append() method
-        .attr("class", "dot") // Assign a class for styling
+        .append("circle") 
+        .attr("class", "dot")
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
         .attr("r", 2.5)
@@ -335,7 +344,6 @@ async function init() {
             .html(`<p align="center"> <b> Mean Salary in Year ${d.work_year} <br></br>is $${d.mean_salary.toFixed(2)}</b></p>`);
           })
         .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
-        // .on("mouseout", function(){return tooltip2.style("display", "none");});
 
     // ==================================================================================
     // ================================= SENIOR_LEVEL EXP ===============================
@@ -345,7 +353,6 @@ async function init() {
         
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        // .call(makeAnnotations_SE)
     
         .append('path')
         .datum(grouped_data_SE)
@@ -365,15 +372,15 @@ async function init() {
                  .duration('50')
                  .attr('opacity', '1');
           });;
-        
+            
     d3.select('svg')
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
         .selectAll(".dot")
         .data(grouped_data_SE)
         .enter()
-        .append("circle") // Uses the enter().append() method
-        .attr("class", "dot") // Assign a class for styling
+        .append("circle")
+        .attr("class", "dot") 
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
         .attr("r", 2.5)
@@ -399,12 +406,10 @@ async function init() {
                 .data(legend_Dict)
                 .enter().append("g")
                 .attr("class", "legend")
-                // .attr("transform", (d, i) => "translate(15,"+(25*i)+")");
                 .attr("transform", (d, i) => "translate("+(200*i)+",0)");
     
             legend.append("rect")
                 .attr('x', width/2 - 150)
-                // .attr('y', height-40)
                 .attr('y', 40)
                 .attr("width", 12)
                 .attr("height", 12)
@@ -413,7 +418,6 @@ async function init() {
     
             legend.append("text")
                 .attr("x", width/2 - 130)
-                // .attr('y', height-32)
                 .attr("y", 50)
                 .attr("dy", ".10em")
                 .style("text-anchor", "start")
@@ -454,10 +458,280 @@ async function init() {
               .attr("text-anchor", "end")
               .attr("x", 160)
               .attr("y", 90)
+              .attr("id","ax")
               .text("Mean Salary in USD ($)");
+
     // ===============================================================================================================
     
     }
     
+
+    // ==============================================================================================================
+    // ==============================================================================================================
+    function displayData_rel(grouped_data_EN, grouped_data_MI, grouped_data_SE, width, height, margin, line, line_2, line_3,xs,ys)
+    {
+    d3.select("svg").selectAll("g").select(".line").attr("opacity", 0.1).attr('stroke-width', 1.5);
+    d3.select("svg").selectAll("text").attr("opacity", 0.1);
+    d3.select("svg").selectAll(".annotations").remove();
+    d3.select("svg").selectAll("circle").remove()
+
+    var tooltip2 = d3.select("#canvas_id")
+        .append("div")
+        .attr("id", "tooltip_id")
+        .style("position", "absolute")
+        .style("visibility", "hidden")
+        .style("background-color", "#bae6fd")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "50px")
+        .style("border-style", "dotted")
+        .style("width", "fit-content")
+        .style("font-size", "0.9em")
+        .style("padding", "10px")
+        .style("opacity", "0.8")
+        .html("<p>I'm a tooltip written in HTML</p>");
+
+    d3.select("#tooltip_id")
+        .style("visibility", "hidden")
+
+    d3.select("svg")
+        .attr("width", width + 2*margin)
+        .attr("height", height + 2*margin)
+        
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+
+        .append('path')
+        .datum(grouped_data_EN)
+        .attr("class", "line") 
+        .attr('fill', 'none')
+        .attr('stroke', 'red')
+        .attr('stroke-width', 3)
+        .attr('d', line)
+        
+        .on('mouseover', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '.3');
+          })
+          .on('mouseout', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '1');
+          });
+                       
+            if (line) {
+                d3.select('svg')
+                .append("g")
+                .attr("transform", "translate("+margin+","+margin+")")
+                .selectAll(".dot")
+                .data(grouped_data_EN)
+                .enter()
+                .append("circle") 
+                .attr("class", "dot_class") 
+                .attr("cx", d => xs(d.work_year))
+                .attr("cy", function(d){
+                    const starter_arr = grouped_data_EN.filter(d => d.work_year == '2020')
+                    if(starter_arr.length == 0){
+                        return null;
+                    }
+                    const starter_val = starter_arr[0].mean_salary;
+                    return ys(d.mean_salary / starter_val);})
+                .attr("r", 2.5)
+                .on("mouseover", (evt, d) => {
+                    const [mx, my] = d3.pointer(evt);
+                    d3.select("#tooltip_id")
+                    .style("left", (evt.pageX + 30) + "px") 
+                    .style("top", (evt.pageY) + "px")
+                    .style("visibility", "visible")
+                    .html(`<p align="center"> <b> Mean Salary in Year ${d.work_year} <br></br>is $${d.mean_salary.toFixed(2)}</b></p>`);
+                  })
+                .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
+            }
+
+
+
+    // ==================================================================================
     
+    // ================================= MID_LEVEL EXP ==================================
+    d3.select("svg")
+        .attr("width", width + 2*margin)
+        .attr("height", height + 2*margin)
+        
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
     
+        .append('path')
+        .datum(grouped_data_MI)
+        .attr("class", "line") 
+        .attr('fill', 'none')
+        .attr('stroke', 'green')
+        .attr('stroke-width', 3)
+        .attr('d', line_2)
+        .on('mouseover', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '.3');
+          })
+          .on('mouseout', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '1');
+          });
+            
+        if (line_2) {
+        d3.select('svg')
+            .append("g")
+            .attr("transform", "translate("+margin+","+margin+")")
+            .selectAll(".dot")
+            .data(grouped_data_MI)
+            .enter()
+            .append("circle") 
+            .attr("class", "dot")
+            .attr("cx", d => xs(d.work_year))
+            .attr("cy", function(d){
+                const starter_arr = grouped_data_MI.filter(d => d.work_year == '2020')
+                if(starter_arr.length == 0){
+                    return null;
+                }
+                const starter_val = starter_arr[0].mean_salary;
+                return ys(d.mean_salary / starter_val);})
+            .attr("r", 2.5)
+            .on("mouseover", (evt, d) => {
+                const [mx, my] = d3.pointer(evt);
+                d3.select("#tooltip_id")
+                .style("left", (evt.pageX + 30) + "px") 
+                .style("top", (evt.pageY) + "px")
+                .style("visibility", "visible")
+                .html(`<p align="center"> <b> Mean Salary in Year ${d.work_year} <br></br>is $${d.mean_salary.toFixed(2)}</b></p>`);
+            })
+            .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
+        }
+    // ==================================================================================
+    // ================================= SENIOR_LEVEL EXP ===============================
+    d3.select("svg")
+        .attr("width", width + 2*margin)
+        .attr("height", height + 2*margin)
+        
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+    
+        .append('path')
+        .datum(grouped_data_SE)
+        .attr("class", "line") 
+        .attr('fill', 'none')
+        .attr('stroke', 'steelblue')
+        .attr('stroke-width', 3)
+        .attr('d', line_3)
+        
+        .on('mouseover', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '.3');
+          })
+          .on('mouseout', function (d, i) {
+            d3.select(this).transition()
+                 .duration('50')
+                 .attr('opacity', '1');
+          });;
+                
+    if (line_3) {
+    d3.select('svg')
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        .selectAll(".dot")
+        .data(grouped_data_SE)
+        .enter()
+        .append("circle")
+        .attr("class", "dot") 
+        .attr("cx", d => xs(d.work_year))
+        .attr("cy", function(d){
+            const starter_arr = grouped_data_SE.filter(d => d.work_year == '2020')
+            if(starter_arr.length == 0){
+                return null;
+            }
+            const starter_val = starter_arr[0].mean_salary;
+            return ys(d.mean_salary / starter_val);})
+        .attr("r", 2.5)
+        .on("mouseover", (evt, d) => {
+            const [mx, my] = d3.pointer(evt);
+            d3.select("#tooltip_id")
+            .style("left", (evt.pageX + 30) + "px") 
+            .style("top", (evt.pageY) + "px")
+            .style("visibility", "visible")
+            .html(`<p align="center"> <b> Mean Salary in Year ${d.work_year} <br></br>is $${d.mean_salary.toFixed(2)}</b></p>`);
+          })
+        .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
+        }
+    // ==================================================================================
+    // ============================== LEGENDS SETTINGS ==================================
+    const legend_Dict = [
+                        {color: "steelblue", label: "Senior Level Position"},
+                        {color: "green", label: "Middle Level Position"},
+                        {color: "red", label: "Entry Level Position"}];
+    
+
+    const legend = d3.select('svg').selectAll(".legend")
+                .data(legend_Dict)
+                .enter().append("g")
+                .attr("class", "legend")
+                .attr("transform", (d, i) => "translate("+(200*i)+",0)");
+    legend.append("rect")
+        .attr('x', width/2 - 150)
+        .attr('y', 40)
+        .attr("width", 12)
+        .attr("height", 12)
+        .style("fill", d => d.color);
+
+
+    legend.append("text")
+        .attr("x", width/2 - 130)
+        .attr("y", 50)
+        .attr("dy", ".10em")
+        .style("text-anchor", "start")
+        .text(d => d.label);
+                
+
+    // ==================================================================================
+    
+    // ========================================== AXES SETTING ======================================================
+    d3.select("svg")
+        .append("g")
+        .attr("transform", "translate("+margin+", "+margin+")")
+        .call(d3.axisLeft(ys))
+        .call(g => g.selectAll(".tick line").clone()
+        .attr("x2",width)
+        .attr("stroke-opacity",0.1)
+);
+    
+    d3.select("svg")
+        .append("g")
+        .attr("transform", "translate("+margin+", "+(height+margin)+")")
+        .call(d3.axisBottom(xs).tickValues([2020,2021,2022,2023]).tickFormat(d3.format("d")))
+        .append("text")
+        .attr("text-anchor", "end")
+        .attr("x", 200)
+        .attr("y", height + margin*1.5)
+        .attr("transform", "translate(175,30)")
+        .text("Work Years");
+    // ===============================================================================================================
+    
+    // ========================================== AXES LABELING ======================================================
+
+    d3.select('svg').append("text")
+              .attr("text-anchor", "end")
+              .attr("x", 200)
+              .attr("y", height + margin*1.2)
+              .attr("transform", "translate(175,30)")
+              .text("Work Years");
+    
+    d3.select('svg').append("text")
+              .attr("text-anchor", "end")
+              .attr("x", 160)
+              .attr("y", 90)
+              .attr("opacity",1)
+              .text("Relative Mean Salary");
+    
+
+    // ===============================================================================================================
+    }

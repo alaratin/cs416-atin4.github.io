@@ -34,6 +34,18 @@
                 Note that you can access further information regarding mean salaries per experience level in data science careers as you hover
                 as you hover over the chart throughout the years. 
             </p>
+            <p>
+                <p style="color:#0284c7; font-weight: bold; text-decoration: underline;">Navigation Information:</p>
+                <ul>
+                    <li> The <b>Previous</b> button refers to re-starting from the start of this scene for all the next scenes.
+                            <img src="img/prev-button.png" alt="Previous button image" style="width:5%;height:1%;"></li>
+                    <li> The <b>Home</b> button takes you to the start of the webpage, a background information and the 
+                        starting point of exploring the designed roadmap.  <img src="img/home-button.png" alt="Home button image" style="width:5%;height:1%;"></li>
+                    <li> The <b>Next</b> button is desigend to assist you in continuing the following scenes where you will receive more information related to 
+                        different experience levels in data-related positinos. 
+                        <img src="img/next-button.png" alt="Next button image" style="width:5%;height:1%;"></li>
+                </ul>
+            </p>
             <div>
                 <!-- @ NAVIGATION ITEM LOCATION -->
                  <ul class='nav-items'>
@@ -70,14 +82,15 @@
                 </div>
 
                 <div class="container">
-                    <h4> Company Location Selection </h4>
-                    <input type="radio" name = "loc" class = "us" value="1" onclick="init()">
-                    <label for="us"> United States of America </label><br>
-                    <input type="radio" checked="checked" class = "all_count" name = "loc" value="1" onclick="init()">
-                    <label for="all_count"> All Countries </label><br>
+                    <h4> Mean Salary Unit Selection </h4>
+                    <input type="radio" checked="checked" name="unit" class = "abs" value="1" onclick="init()">
+                    <label for="rel"> Absolute </label><br>
+                    <input type="radio" name = "unit" class = "rel" value="1" onclick="init()">
+                    <label for="rel"> Relative </label><br>
                     <label for="all_count" style="color: #e0f2fe;"> None </label><br>
                     <label for="all_count" style="color: #e0f2fe;"> None </label><br>
                 </div>
+                
 
                 <div id="canvas_id">
                 <svg width=300 height=300 style="display: block; margin: auto"> </svg>

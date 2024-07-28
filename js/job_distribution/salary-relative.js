@@ -50,8 +50,6 @@ async function init() {
         .y(function(d) {
             const starter_arr = grouped_data_EN.filter(d => d.work_year == '2020')
             const starter_val = starter_arr[0].mean_salary;
-            console.log(starter_val)
-
             return ys(d.mean_salary / starter_val);})
         .curve(d3.curveMonotoneX);
 
@@ -60,8 +58,6 @@ async function init() {
         .y(function(d) {
             const starter_arr = grouped_data_MI.filter(d => d.work_year == '2020')
             const starter_val = starter_arr[0].mean_salary;
-            console.log(starter_val)
-
             return ys(d.mean_salary / starter_val);})
         .curve(d3.curveMonotoneX);
     const line_3 = d3.line()
@@ -69,8 +65,6 @@ async function init() {
         .y(function(d) {
             const starter_arr = grouped_data_SE.filter(d => d.work_year == '2020')
             const starter_val = starter_arr[0].mean_salary;
-            console.log(starter_val)
-
             return ys(d.mean_salary / starter_val);})
         .curve(d3.curveMonotoneX);
     
@@ -80,23 +74,23 @@ async function init() {
     // ===============================================================================================================
     // =============================================== ANNOTATIONS ===================================================
     // ===============================================================================================================
-    var label_color= d3.color("brown").darker(); 
+    var label_color= d3.color("gray").darker(); 
     const annotations_EN = [
         {
             note: {
-                label: "Lowest salary with $54,905.25",
+                label: "Highest relative increase by 0.66",
                 title: "Entry Level",
-                wrap: 100
+                wrap: 150
             },
             type:d3.annotationCalloutCircle,
-            x: xs('2021'),
-            y: ys(54905.25454545455),
+            x: xs('2023'),
+            y: ys(1.6567779664438127),
             subject:{
                 radius: 10,
                 raiduspadding: 5,
             },
-            dy: 75,
-            dx: 45,
+            dy: 200,
+            dx: -50,
             color: label_color
         }
     ];
@@ -123,19 +117,19 @@ async function init() {
     const annotations_SE = [
         {
             note: {
-                label: "Lowest salary with $126,085.36",
+                label: "Lowest relative decrease by 0.09",
                 title: "Senior Level",
-                wrap: 100
+                wrap: 150
             },
             type:d3.annotationCalloutCircle,
             x: xs('2021'),
-            y: ys(126085.3561643835),
+            y: ys(0.9187182804229331),
             subject:{
-                radius: 10,
+                radius: 3,
                 raiduspadding: 5,
             },
-            dy: 40,
-            dx: -5,
+            dy: 100,
+            dx: 20,
             color: label_color
         }
     ];
@@ -158,8 +152,7 @@ async function init() {
         
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        // .call(makeAnnotations_EN)
-
+        
         .append('path')
         .datum(grouped_data_EN)
         .attr("class", "line") 
@@ -168,18 +161,12 @@ async function init() {
         .attr('stroke-width', 3)        
         .attr('d', line);
 
-    const len = d3.select("svg").selectAll('path').node().getTotalLength();
-    d3.select("svg").selectAll('path')
-        .attr("stroke-dasharray", len + " " + len)
-        .attr("stroke-dashoffset", len)
-        .transition() 
-        .duration(2000) 
-        .ease(d3.easeLinear) 
-        .attr("stroke-dashoffset", 0);
 
     d3.select('svg')
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
+        .call(makeAnnotations_EN)
+
         .selectAll(".dot")
         .data(grouped_data_EN)
         .enter()
@@ -187,7 +174,6 @@ async function init() {
         .attr("class", "dot") 
         .attr("cx", d => xs(d.work_year))
         .attr("cy", function(d){
-            //  return ys(d.mean_salary)
             const starter_arr = grouped_data_EN.filter(d => d.work_year == '2020')
             const starter_val = starter_arr[0].mean_salary;
             console.log(starter_val)
@@ -197,7 +183,6 @@ async function init() {
     d3.select("svg")
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        // .call(makeAnnotations_MI)
 
         .append('path')
         .datum(grouped_data_MI)
@@ -207,16 +192,6 @@ async function init() {
         .attr('stroke-width', 3)        
         .attr('d', line_2);
     
-    const len_2 = d3.select("svg").selectAll('path').node().getTotalLength();
-    d3.select("svg").selectAll('path')
-            .attr("stroke-dasharray", len_2 + " " + len_2)
-            .attr("stroke-dashoffset", len_2)
-            .transition() 
-            .duration(2000) 
-            .ease(d3.easeLinear) 
-            .attr("stroke-dashoffset", 0);
-    
-
     d3.select('svg')
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
@@ -239,7 +214,6 @@ async function init() {
             
             .append("g")
             .attr("transform", "translate("+margin+","+margin+")")
-            // .call(makeAnnotations_SE)
         
             .append('path')
             .datum(grouped_data_SE)
@@ -260,6 +234,8 @@ async function init() {
         d3.select('svg')
             .append("g")
             .attr("transform", "translate("+margin+","+margin+")")
+            .call(makeAnnotations_SE)
+
             .selectAll(".dot")
             .data(grouped_data_SE)
             .enter()
@@ -267,7 +243,6 @@ async function init() {
             .attr("class", "dot")
             .attr("cx", d => xs(d.work_year))
             .attr("cy", function(d){
-                //  return ys(d.mean_salary)
                 const starter_arr = grouped_data_SE.filter(d => d.work_year == '2020')
                 const starter_val = starter_arr[0].mean_salary;
                 console.log(starter_val)
@@ -312,6 +287,12 @@ async function init() {
     // ===============================================================================================================
     // ===============================================================================================================
     // ===============================================================================================================
+    // ===============================================================================================================
+    // ===============================================================================================================
+    // ===============================================================================================================
+    // ===============================================================================================================
+    // =============================================== SECOND PAGE ===================================================
+    // ===============================================================================================================
 
     const button_exp2 = document.getElementById('exp2')
     var max_val_salary = d3.max([
@@ -323,6 +304,55 @@ async function init() {
     const ys_new = d3.scaleLinear().domain([0, max_val_salary]).range([height, 0]);
     const xs_new = d3.scaleLinear().domain(d3.extent(grouped_data_SE, d=>d.work_year)).range([0,width]);
 
+
+    var label_color_2= d3.color("purple").darker(); 
+    const annotations_EN_new = [
+        {
+            note: {
+                label: "Absolute mean salary with $95,284 corresponding to the highest relative change ",
+                title: "Entry Level",
+                wrap: 150
+            },
+            type:d3.annotationCalloutCircle,
+            x: xs_new('2023'),
+            y: ys_new(95283.96610169491),
+            subject:{
+                radius: 10,
+                raiduspadding: 5,
+            },
+            dy: 150,
+            dx: -50,
+            color: label_color_2
+        }
+    ];
+    
+    console.log(grouped_data_SE)
+    const annotations_SE_new = [
+        {
+            note: {
+                label: "Absolute mean salary with $126,085.3 corresponding to the lowest relative change",
+                title: "Senior Level",
+                wrap: 150
+            },
+            type:d3.annotationCalloutCircle,
+            x: xs_new('2021'),
+            y: ys_new(126085.35616438356),
+            subject:{
+                radius: 10,
+                raiduspadding: 5,
+            },
+            dy: 270,
+            dx: -10,
+            color: label_color_2
+        }
+    ];
+    
+    const makeAnnotations_EN_new = d3.annotation()
+    .annotations(annotations_EN_new);
+
+    const makeAnnotations_SE_new = d3.annotation()
+            .annotations(annotations_SE_new);
+
     const line_new = d3.line()
         .x(function(d) {return xs_new(d.work_year);})
         .y(function(d) {return ys_new(d.mean_salary);})
@@ -333,10 +363,12 @@ async function init() {
     button_exp2.addEventListener('click', function() {
         clicked_next = clicked_next + 1
         if(clicked_next == "1"){
+            
 
-        d3.select("svg").selectAll("g").select(".line").attr("opacity", 0.1);
+        d3.select("svg").selectAll("g").select(".line").attr("opacity", 0.1).attr('stroke-width', 1.5);
         // d3.select("svg").selectAll("g").select("text").attr("opacity", 0.1);
         d3.select("svg").selectAll("text").attr("opacity", 0.1);
+        d3.select("svg").selectAll(".annotations").remove();
         d3.select("svg").selectAll("circle").remove()
     
         d3.select("svg")
@@ -354,26 +386,19 @@ async function init() {
             .attr('stroke-width', 3)
             .attr('d', line_new);
 
-    const len_1_new = d3.select("svg").selectAll('path').node().getTotalLength();
-        d3.select("svg").selectAll('path')
-                .attr("stroke-dasharray", len_1_new + " " + len_1_new)
-                .attr("stroke-dashoffset", len_1_new)
-                .transition() 
-                .duration(2000) 
-                .ease(d3.easeLinear) 
-                .attr("stroke-dashoffset", 0);
+        d3.select('svg')
+            .append("g")
+            .attr("transform", "translate("+margin+","+margin+")")
+            .call(makeAnnotations_EN_new)
 
-    d3.select('svg')
-        .append("g")
-        .attr("transform", "translate("+margin+","+margin+")")
-        .selectAll(".dot")
-        .data(grouped_data_EN)
-        .enter()
-        .append("circle")
-        .attr("class", "dot") 
-        .attr("cx", d => xs_new(d.work_year))
-        .attr("cy", d => ys_new(d.mean_salary))
-        .attr("r", 2);
+            .selectAll(".dot")
+            .data(grouped_data_EN)
+            .enter()
+            .append("circle")
+            .attr("class", "dot") 
+            .attr("cx", d => xs_new(d.work_year))
+            .attr("cy", d => ys_new(d.mean_salary))
+            .attr("r", 2);
 
     // ===============================================================================================================
         d3.select("svg")
@@ -388,15 +413,6 @@ async function init() {
         .attr('stroke', 'green')
         .attr('stroke-width', 3)
         .attr('d', line_new);
-
-        const len_2_new = d3.select("svg").selectAll('path').node().getTotalLength();
-        d3.select("svg").selectAll('path')
-                .attr("stroke-dasharray", len_2_new + " " + len_2_new)
-                .attr("stroke-dashoffset", len_2_new)
-                .transition() 
-                .duration(2000) 
-                .ease(d3.easeLinear) 
-                .attr("stroke-dashoffset", 0);
 
         d3.select('svg')
             .append("g")
@@ -417,7 +433,6 @@ async function init() {
 
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        // .call(makeAnnotations_SE)
 
         .append('path')
         .datum(grouped_data_SE)
@@ -439,6 +454,8 @@ async function init() {
         d3.select('svg')
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
+        .call(makeAnnotations_SE_new)
+
         .selectAll(".dot")
         .data(grouped_data_SE)
         .enter()
@@ -459,7 +476,7 @@ async function init() {
         .call(d3.axisLeft(ys_new))
         .call(g => g.selectAll(".tick line").clone()
             .attr("x2",width)
-            .attr("stroke-opacity",0.5));
+            .attr("stroke-opacity",0.4));
     
     d3.select("svg")
         .append("g")
