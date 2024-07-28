@@ -147,7 +147,7 @@ async function init() {
     
     .append("g")
     .attr("transform", "translate("+margin+","+margin+")")
-    .call(makeAnnotations_EN)
+    // .call(makeAnnotations_EN)
 
     .append('path')
     .datum(grouped_data_EN)
@@ -157,17 +157,99 @@ async function init() {
     .attr('stroke-width', 1.5)
     .attr('d', line);
 
-d3.select('svg')
+    const len_1 = d3.select("svg").selectAll('path').node().getTotalLength();
+        d3.select("svg").selectAll('path')
+                .attr("stroke-dasharray", len_1 + " " + len_1)
+                .attr("stroke-dashoffset", len_1)
+                .transition() 
+                .duration(2000) 
+                .ease(d3.easeLinear) 
+                .attr("stroke-dashoffset", 0);
+
+    d3.select('svg')
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        .selectAll(".dot")
+        .data(grouped_data_EN)
+        .enter()
+        .append("circle")
+        .attr("class", "dot") 
+        .attr("cx", d => xs(d.work_year))
+        .attr("cy", d => ys(d.mean_salary))
+        .attr("r", 2);
+    // ===============================================================================================================
+    d3.select("svg")
+    .append("g")
+    .attr("transform", "translate("+margin+","+margin+")")
+    // .call(makeAnnotations_MI)
+
+    .append('path')
+    .datum(grouped_data_MI)
+    .attr("class", "line") 
+    .attr('fill', 'none')
+    .attr('stroke', 'green')
+    .attr('stroke-width', 1.5)
+    .attr('d', line);
+
+    const len_2 = d3.select("svg").selectAll('path').node().getTotalLength();
+    d3.select("svg").selectAll('path')
+            .attr("stroke-dasharray", len_2 + " " + len_2)
+            .attr("stroke-dashoffset", len_2)
+            .transition() 
+            .duration(2000) 
+            .ease(d3.easeLinear) 
+            .attr("stroke-dashoffset", 0);
+
+    d3.select('svg')
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        .selectAll(".dot")
+        .data(grouped_data_MI)
+        .enter()
+        .append("circle")
+        .attr("class", "dot")
+        .attr("cx", d => xs(d.work_year))
+        .attr("cy", d => ys(d.mean_salary))
+        .attr("r", 2);
+    // ===============================================================================================================
+
+    d3.select("svg")
+    .attr("width", width + 2*margin)
+    .attr("height", height + 2*margin)
+
+    .append("g")
+    .attr("transform", "translate("+margin+","+margin+")")
+    // .call(makeAnnotations_SE)
+
+    .append('path')
+    .datum(grouped_data_SE)
+    .attr("class", "line") 
+    .attr('fill', 'none')
+    .attr('stroke', 'steelblue')
+    .attr('stroke-width', 1.5)
+    .attr('d', line);
+
+    const len_3 = d3.select("svg").selectAll('path').node().getTotalLength();
+    d3.select("svg").selectAll('path')
+            .attr("stroke-dasharray", len_3 + " " + len_3)
+            .attr("stroke-dashoffset", len_3)
+            .transition() 
+            .duration(2000) 
+            .ease(d3.easeLinear) 
+            .attr("stroke-dashoffset", 0);
+
+    d3.select('svg')
     .append("g")
     .attr("transform", "translate("+margin+","+margin+")")
     .selectAll(".dot")
-    .data(grouped_data_EN)
+    .data(grouped_data_SE)
     .enter()
-    .append("circle")
-    .attr("class", "dot") 
+    .append("circle") 
+    .attr("class", "dot")
     .attr("cx", d => xs(d.work_year))
     .attr("cy", d => ys(d.mean_salary))
     .attr("r", 2);
+
     // ===============================================================================================================
 
     // ===============================================================================================================
@@ -180,7 +262,7 @@ d3.select('svg')
         .call(d3.axisLeft(ys))
         .call(g => g.selectAll(".tick line").clone()
             .attr("x2",width)
-            .attr("stroke-opacity",0.1));
+            .attr("stroke-opacity",0.2));
     
     d3.select("svg")
         .append("g")

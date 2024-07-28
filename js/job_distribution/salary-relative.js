@@ -3,9 +3,6 @@ async function init() {
     var height = 500;
     var width = 500;
     var margin = 100;
-
-
-
     // ===============================================================================================================
     // =========================================== DATA SELECTION & GROUPING =========================================
     // ===============================================================================================================
@@ -152,7 +149,6 @@ async function init() {
             .annotations(annotations_SE);
     // ===============================================================================================================
 
-    
     // ===============================================================================================================
     // ======================================== CREATE && DRAW SVG ===================================================
     // ===============================================================================================================
@@ -169,7 +165,7 @@ async function init() {
         .attr("class", "line") 
         .attr('fill', 'none')
         .attr('stroke', 'red')
-        .attr('stroke-width', 1.5)
+        .attr('stroke-width', 3)        
         .attr('d', line);
 
     const len = d3.select("svg").selectAll('path').node().getTotalLength();
@@ -208,7 +204,7 @@ async function init() {
         .attr("class", "line") 
         .attr('fill', 'none')
         .attr('stroke', 'green')
-        .attr('stroke-width', 1.5)
+        .attr('stroke-width', 3)        
         .attr('d', line_2);
     
     const len_2 = d3.select("svg").selectAll('path').node().getTotalLength();
@@ -219,6 +215,7 @@ async function init() {
             .duration(2000) 
             .ease(d3.easeLinear) 
             .attr("stroke-dashoffset", 0);
+    
 
     d3.select('svg')
         .append("g")
@@ -249,7 +246,7 @@ async function init() {
             .attr("class", "line") 
             .attr('fill', 'none')
             .attr('stroke', 'steelblue')
-            .attr('stroke-width', 1.5)
+            .attr('stroke-width', 3)            
             .attr('d', line_3);
         
         const len_3 = d3.select("svg").selectAll('path').node().getTotalLength();
@@ -291,6 +288,7 @@ async function init() {
     d3.select("svg")
         .append("g")
         .attr("transform", "translate("+margin+", "+(height+margin)+")")
+
         .call(d3.axisBottom(xs).tickValues([2020,2021,2022,2023]).tickFormat(d3.format("d")))
         .append("text")
         .attr("text-anchor", "end")
@@ -298,12 +296,8 @@ async function init() {
         .attr("y", height + margin*1.5)
         .attr("transform", "translate(175,30)")
         .text("Work Years");
-    // ===============================================================================================================
-    // ===============================================================================================================
-    // ========================================== AXES LABELING ======================================================
-    // ===============================================================================================================
-
-    d3.select('svg').append("text")
+    
+        d3.select('svg').append("text")
               .attr("text-anchor", "end")
               .attr("x", 200)
               .attr("y", height + margin*1.2)
@@ -312,9 +306,196 @@ async function init() {
     
     d3.select('svg').append("text")
               .attr("text-anchor", "end")
-              .attr("x", 160)
+              .attr("x", 200)
               .attr("y", 90)
-              .text("Mean Salary in USD ($)");
+              .text("Relative Mean Salary");
+    // ===============================================================================================================
+    // ===============================================================================================================
+    // ===============================================================================================================
+
+    const button_exp2 = document.getElementById('exp2')
+    var max_val_salary = d3.max([
+        d3.max(grouped_data_EN, d=>d.mean_salary),
+        d3.max(grouped_data_MI, d=>d.mean_salary),
+        d3.max(grouped_data_SE, d=>d.mean_salary)
+    ]);
+
+    const ys_new = d3.scaleLinear().domain([0, max_val_salary]).range([height, 0]);
+    const xs_new = d3.scaleLinear().domain(d3.extent(grouped_data_SE, d=>d.work_year)).range([0,width]);
+
+    const line_new = d3.line()
+        .x(function(d) {return xs_new(d.work_year);})
+        .y(function(d) {return ys_new(d.mean_salary);})
+        .curve(d3.curveMonotoneX);
+
+    var clicked_next = 0;
+    
+    button_exp2.addEventListener('click', function() {
+        clicked_next = clicked_next + 1
+        if(clicked_next == "1"){
+
+        d3.select("svg").selectAll("g").select(".line").attr("opacity", 0.1);
+        // d3.select("svg").selectAll("g").select("text").attr("opacity", 0.1);
+        d3.select("svg").selectAll("text").attr("opacity", 0.1);
+        d3.select("svg").selectAll("circle").remove()
+    
+        d3.select("svg")
+            .attr("width", width + 2*margin)
+            .attr("height", height + 2*margin)
+            
+            .append("g")
+            .attr("transform", "translate("+margin+","+margin+")")
+
+            .append('path')
+            .datum(grouped_data_EN)
+            .attr("class", "line") 
+            .attr('fill', 'none')
+            .attr('stroke', 'red')
+            .attr('stroke-width', 3)
+            .attr('d', line_new);
+
+    const len_1_new = d3.select("svg").selectAll('path').node().getTotalLength();
+        d3.select("svg").selectAll('path')
+                .attr("stroke-dasharray", len_1_new + " " + len_1_new)
+                .attr("stroke-dashoffset", len_1_new)
+                .transition() 
+                .duration(2000) 
+                .ease(d3.easeLinear) 
+                .attr("stroke-dashoffset", 0);
+
+    d3.select('svg')
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        .selectAll(".dot")
+        .data(grouped_data_EN)
+        .enter()
+        .append("circle")
+        .attr("class", "dot") 
+        .attr("cx", d => xs_new(d.work_year))
+        .attr("cy", d => ys_new(d.mean_salary))
+        .attr("r", 2);
+
+    // ===============================================================================================================
+        d3.select("svg")
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        // .call(makeAnnotations_MI)
+
+        .append('path')
+        .datum(grouped_data_MI)
+        .attr("class", "line") 
+        .attr('fill', 'none')
+        .attr('stroke', 'green')
+        .attr('stroke-width', 3)
+        .attr('d', line_new);
+
+        const len_2_new = d3.select("svg").selectAll('path').node().getTotalLength();
+        d3.select("svg").selectAll('path')
+                .attr("stroke-dasharray", len_2_new + " " + len_2_new)
+                .attr("stroke-dashoffset", len_2_new)
+                .transition() 
+                .duration(2000) 
+                .ease(d3.easeLinear) 
+                .attr("stroke-dashoffset", 0);
+
+        d3.select('svg')
+            .append("g")
+            .attr("transform", "translate("+margin+","+margin+")")
+            .selectAll(".dot")
+            .data(grouped_data_MI)
+            .enter()
+            .append("circle")
+            .attr("class", "dot")
+            .attr("cx", d => xs_new(d.work_year))
+            .attr("cy", d => ys_new(d.mean_salary))
+            .attr("r", 2);
+    // ===============================================================================================================
+
+        d3.select("svg")
+        .attr("width", width + 2*margin)
+        .attr("height", height + 2*margin)
+
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        // .call(makeAnnotations_SE)
+
+        .append('path')
+        .datum(grouped_data_SE)
+        .attr("class", "line") 
+        .attr('fill', 'none')
+        .attr('stroke', 'steelblue')
+        .attr('stroke-width', 3)
+        .attr('d', line_new);
+
+        const len_3_new = d3.select("svg").selectAll('path').node().getTotalLength();
+        d3.select("svg").selectAll('path')
+                .attr("stroke-dasharray", len_3_new + " " + len_3_new)
+                .attr("stroke-dashoffset", len_3_new)
+                .transition() 
+                .duration(2000) 
+                .ease(d3.easeLinear) 
+                .attr("stroke-dashoffset", 0);
+
+        d3.select('svg')
+        .append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        .selectAll(".dot")
+        .data(grouped_data_SE)
+        .enter()
+        .append("circle") 
+        .attr("class", "dot")
+        .attr("cx", d => xs_new(d.work_year))
+        .attr("cy", d => ys_new(d.mean_salary))
+        .attr("r", 2);
+
+    // ===============================================================================================================
+
+    // ===============================================================================================================
+    // ========================================== AXES SETTING ======================================================
+    // ===============================================================================================================
+    d3.select("svg")
+        .append("g")
+        .attr("transform", "translate("+margin+", "+margin+")")
+        .call(d3.axisLeft(ys_new))
+        .call(g => g.selectAll(".tick line").clone()
+            .attr("x2",width)
+            .attr("stroke-opacity",0.5));
+    
+    d3.select("svg")
+        .append("g")
+        .attr("transform", "translate("+margin+", "+(height+margin)+")")
+        .call(d3.axisBottom(xs_new).tickValues([2020,2021,2022,2023]).tickFormat(d3.format("d")))
+        .append("text")
+        .attr("text-anchor", "end")
+        .attr("x", 200)
+        .attr("y", height + margin*1.5)
+        .attr("transform", "translate(175,30)")
+        .text("Work Years");
+
+        legend.select('text').attr('opacity',1);
+        d3.select('svg').append("text")
+                  .attr("text-anchor", "end")
+                  .attr("x", 200)
+                  .attr("y", height + margin*1.2)
+                  .attr("transform", "translate(175,30)")
+                  .text("Work Years");
+        
+        d3.select('svg').append("text")
+                  .attr("text-anchor", "end")
+                  .attr("x", 250)
+                  .attr("y", 90)
+                  .text("Absolute Mean Salary in USD ($)");
+        }
+        else{
+            window.location.href = 'page-3.html'; 
+        }
+    });
+
+    // ===============================================================================================================
+    // ===============================================================================================================
+    // ========================================== AXES LABELING ======================================================
+    // ===============================================================================================================
+
     // ===============================================================================================================
      
     // ==================================================================================
@@ -345,8 +526,14 @@ async function init() {
         .attr("y", 50)
         .attr("dy", ".10em")
         .style("text-anchor", "start")
+        .attr("opacity", 1)
         .text(d => d.label);
+
+
     // ==================================================================================
+    
+
+
 
 }
 
