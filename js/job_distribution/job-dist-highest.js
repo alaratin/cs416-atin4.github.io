@@ -21,39 +21,50 @@ async function init() {
     var absolute_flag = document.querySelector('.abs').checked;
     var relative_flag = document.querySelector('.rel').checked;
     
+    document.querySelector('.fifty').disabled = false;
+    document.querySelector('.mid').disabled = false;
+    document.querySelector('.zero').disabled = false;
+    document.querySelector('.small').disabled = false;
 
-    if(relative_flag && (fifty_flag ||  mid_flag)){
-        let output = document.querySelector('.mid')
+    if(relative_flag && mid_flag){
+        let output = document.querySelector('.fifty')
+        // @ Checked false
         output.checked = false;
+        // @ Look gray
+        output.disabled = true
 
-        console.log("OUTPUT", output)
+        fifty_flag = false;
+    }
+    else if(relative_flag && fifty_flag){
+        let output = document.querySelector('.mid')
+        // @ Checked false
+        output.checked = false;
+        // @ Look gray
         output.disabled = true
 
         mid_flag = false;
-        all_flag = true;
     }
-    else{
-        let output = document.querySelector('.mid')
-        output.disabled = false
-
-        small_flag = document.querySelector('.small').checked;
-        mid_flag = document.querySelector('.mid').checked;
-        large_flag = document.querySelector('.large').checked;
-        all_flag = document.querySelector('.all').checked;
-    }
-
-    if(relative_flag && zero_flag){
-        let output = document.querySelector('.small')
-        // let all = document.querySelector('.all_flag')
+    
+    if(relative_flag && small_flag){
+        let output = document.querySelector('.zero')
+        // @ Checked false
         output.checked = false;
-        console.log("OUTPUT", output)
+        // @ Look gray
         output.disabled = true
+
+        zero_flag = false;
+    }
+    else if(relative_flag && zero_flag){
+        let output = document.querySelector('.small')
+        // @ Checked false
+        output.checked = false;
+        // @ Look gray
+        output.disabled = true
+
         small_flag = false;
     }
-    else{
-        let output = document.querySelector('.small')
-        output.disabled = false
-    }
+
+ 
 
     // ================================================= GROUPING ===================================================
     var data_SE = data.filter(d => d.experience_level === "SE");
@@ -153,7 +164,7 @@ async function init() {
 
 
     if(relative_flag){
-        const ys_new = d3.scaleLinear().domain([0, 4]).range([height, 0]);
+        const ys_new = d3.scaleLinear().domain([0, 4.5]).range([height, 0]);
 
         const line_1 = (() => {
             const starter_arr = grouped_data_EN.filter(d => d.work_year == '2020');
@@ -456,10 +467,10 @@ async function init() {
     
     d3.select('svg').append("text")
               .attr("text-anchor", "end")
-              .attr("x", 160)
+              .attr("x", 250)
               .attr("y", 90)
               .attr("id","ax")
-              .text("Mean Salary in USD ($)");
+              .text("Absolute Mean Salary in USD ($)");
 
     // ===============================================================================================================
     
@@ -727,10 +738,10 @@ async function init() {
     
     d3.select('svg').append("text")
               .attr("text-anchor", "end")
-              .attr("x", 160)
+              .attr("x", 200)
               .attr("y", 90)
               .attr("opacity",1)
-              .text("Relative Mean Salary");
+              .text("Relative Mean Salary Change");
     
 
     // ===============================================================================================================

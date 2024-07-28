@@ -117,7 +117,7 @@ async function init() {
     const annotations_SE = [
         {
             note: {
-                label: "Lowest relative decrease by 0.09",
+                label: "Highest relative decrease by 0.09",
                 title: "Senior Level",
                 wrap: 150
             },
@@ -283,7 +283,7 @@ async function init() {
               .attr("text-anchor", "end")
               .attr("x", 200)
               .attr("y", 90)
-              .text("Relative Mean Salary");
+              .text("Relative Mean Salary Change");
     // ===============================================================================================================
     // ===============================================================================================================
     // ===============================================================================================================
@@ -309,7 +309,7 @@ async function init() {
     const annotations_EN_new = [
         {
             note: {
-                label: "Absolute mean salary with $95,284 corresponding to the highest relative change ",
+                label: "Absolute mean salary with $95,284 corresponding to the highest relative increase ",
                 title: "Entry Level",
                 wrap: 150
             },
@@ -330,7 +330,7 @@ async function init() {
     const annotations_SE_new = [
         {
             note: {
-                label: "Absolute mean salary with $126,085.3 corresponding to the lowest relative change",
+                label: "Absolute mean salary with $126,085.3 corresponding to the highest relative decrease",
                 title: "Senior Level",
                 wrap: 150
             },
