@@ -1,7 +1,7 @@
 // "use strict"
 async function init() {
-    var height = 500;
-    var width = 500;
+    var height = 650;
+    var width = 650;
     var margin = 100;
     // ===============================================================================================================
     // =========================================== DATA SELECTION & GROUPING =========================================
@@ -326,7 +326,6 @@ async function init() {
         }
     ];
     
-    console.log(grouped_data_SE)
     const annotations_SE_new = [
         {
             note: {
@@ -341,7 +340,7 @@ async function init() {
                 radius: 10,
                 raiduspadding: 5,
             },
-            dy: 270,
+            dy: 50,
             dx: -10,
             color: label_color_2
         }
@@ -366,7 +365,6 @@ async function init() {
             
 
         d3.select("svg").selectAll("g").select(".line").attr("opacity", 0.1).attr('stroke-width', 1.5);
-        // d3.select("svg").selectAll("g").select("text").attr("opacity", 0.1);
         d3.select("svg").selectAll("text").attr("opacity", 0.1);
         d3.select("svg").selectAll(".annotations").remove();
         d3.select("svg").selectAll("circle").remove()
@@ -404,7 +402,6 @@ async function init() {
         d3.select("svg")
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        // .call(makeAnnotations_MI)
 
         .append('path')
         .datum(grouped_data_MI)
