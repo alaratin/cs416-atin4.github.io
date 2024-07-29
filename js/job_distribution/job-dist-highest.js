@@ -1,7 +1,7 @@
 // "use strict"
 async function init() {
-    var height = 500;
-    var width = 500;
+    var height = 650;
+    var width = 650;
     var margin = 100;
     
     // =============================================== DATA SELECTION =============================================
@@ -226,7 +226,6 @@ async function init() {
     }
 
     if(absolute_flag){
-
         displayData(grouped_data_EN, grouped_data_MI, grouped_data_SE, 
                        width, height, margin, line,xs,ys)
     }
@@ -295,7 +294,7 @@ async function init() {
         .attr("class", "dot_class") 
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
-        .attr("r", 2.5)
+        .attr("r", 4)
         .on("mouseover", (evt, d) => {
             const [mx, my] = d3.pointer(evt);
             d3.select("#tooltip_id")
@@ -345,7 +344,7 @@ async function init() {
         .attr("class", "dot")
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
-        .attr("r", 2.5)
+        .attr("r", 4)
         .on("mouseover", (evt, d) => {
             const [mx, my] = d3.pointer(evt);
             d3.select("#tooltip_id")
@@ -394,7 +393,7 @@ async function init() {
         .attr("class", "dot") 
         .attr("cx", d => xs(d.work_year))
         .attr("cy", d => ys(d.mean_salary))
-        .attr("r", 2.5)
+        .attr("r", 4)
         .on("mouseover", (evt, d) => {
             const [mx, my] = d3.pointer(evt);
             d3.select("#tooltip_id")
@@ -530,8 +529,10 @@ async function init() {
                  .duration('50')
                  .attr('opacity', '1');
           });
-                       
-            if (line) {
+                  
+          if (line) {
+                const starter_arr_EN = grouped_data_EN.filter(d => d.work_year == '2020')
+                const starter_val_EN = starter_arr_EN[0].mean_salary;
                 d3.select('svg')
                 .append("g")
                 .attr("transform", "translate("+margin+","+margin+")")
@@ -542,21 +543,16 @@ async function init() {
                 .attr("class", "dot_class") 
                 .attr("cx", d => xs(d.work_year))
                 .attr("cy", function(d){
-                    const starter_arr = grouped_data_EN.filter(d => d.work_year == '2020')
-                    if(starter_arr.length == 0){
-                        return null;
-                    }
-                    const starter_val = starter_arr[0].mean_salary;
-                    return ys(d.mean_salary / starter_val);})
-                .attr("r", 2.5)
+                    return ys(d.mean_salary / starter_val_EN);})
+                .attr("r", 4)
                 .on("mouseover", (evt, d) => {
                     const [mx, my] = d3.pointer(evt);
                     d3.select("#tooltip_id")
                     .style("left", (evt.pageX + 30) + "px") 
                     .style("top", (evt.pageY) + "px")
                     .style("visibility", "visible")
-                    .html(`<p align="center"> <b> Mean Salary in Year ${d.work_year} <br></br>is $${d.mean_salary.toFixed(2)}</b></p>`);
-                  })
+                    .html(`<p align="center"> <b> Relative Mean Salary in ${d.work_year} <br></br>is ${(d.mean_salary/starter_val_EN).toFixed(4)}</b></p>`);
+                })
                 .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
             }
 
@@ -589,8 +585,11 @@ async function init() {
                  .duration('50')
                  .attr('opacity', '1');
           });
-            
-        if (line_2) {
+
+          
+          if (line_2) {
+            const starter_arr_MI = grouped_data_MI.filter(d => d.work_year == '2020')
+            const starter_val_MI = starter_arr_MI[0].mean_salary;    
         d3.select('svg')
             .append("g")
             .attr("transform", "translate("+margin+","+margin+")")
@@ -601,20 +600,15 @@ async function init() {
             .attr("class", "dot")
             .attr("cx", d => xs(d.work_year))
             .attr("cy", function(d){
-                const starter_arr = grouped_data_MI.filter(d => d.work_year == '2020')
-                if(starter_arr.length == 0){
-                    return null;
-                }
-                const starter_val = starter_arr[0].mean_salary;
-                return ys(d.mean_salary / starter_val);})
-            .attr("r", 2.5)
+                return ys(d.mean_salary/starter_val_MI);})
+            .attr("r", 4)
             .on("mouseover", (evt, d) => {
                 const [mx, my] = d3.pointer(evt);
                 d3.select("#tooltip_id")
                 .style("left", (evt.pageX + 30) + "px") 
                 .style("top", (evt.pageY) + "px")
                 .style("visibility", "visible")
-                .html(`<p align="center"> <b> Mean Salary in Year ${d.work_year} <br></br>is $${d.mean_salary.toFixed(2)}</b></p>`);
+                .html(`<p align="center"> <b>  Relative Mean Salary in ${d.work_year} <br></br>is ${(d.mean_salary/starter_val_MI).toFixed(4)}</b></p>`);
             })
             .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
         }
@@ -646,33 +640,30 @@ async function init() {
                  .attr('opacity', '1');
           });;
                 
-    if (line_3) {
-    d3.select('svg')
-        .append("g")
-        .attr("transform", "translate("+margin+","+margin+")")
-        .selectAll(".dot")
-        .data(grouped_data_SE)
-        .enter()
-        .append("circle")
-        .attr("class", "dot") 
-        .attr("cx", d => xs(d.work_year))
-        .attr("cy", function(d){
-            const starter_arr = grouped_data_SE.filter(d => d.work_year == '2020')
-            if(starter_arr.length == 0){
-                return null;
-            }
-            const starter_val = starter_arr[0].mean_salary;
-            return ys(d.mean_salary / starter_val);})
-        .attr("r", 2.5)
-        .on("mouseover", (evt, d) => {
-            const [mx, my] = d3.pointer(evt);
-            d3.select("#tooltip_id")
-            .style("left", (evt.pageX + 30) + "px") 
-            .style("top", (evt.pageY) + "px")
-            .style("visibility", "visible")
-            .html(`<p align="center"> <b> Mean Salary in Year ${d.work_year} <br></br>is $${d.mean_salary.toFixed(2)}</b></p>`);
-          })
-        .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
+        if (line_3) {
+            const starter_arr_SE = grouped_data_SE.filter(d => d.work_year == '2020');
+            const starter_val_SE = starter_arr_SE[0].mean_salary;
+        d3.select('svg')
+            .append("g")
+            .attr("transform", "translate("+margin+","+margin+")")
+            .selectAll(".dot")
+            .data(grouped_data_SE)
+            .enter()
+            .append("circle")
+            .attr("class", "dot") 
+            .attr("cx", d => xs(d.work_year))
+            .attr("cy", function(d){
+                return ys(d.mean_salary / starter_val_SE);})
+            .attr("r", 4)
+            .on("mouseover", (evt, d) => {
+                const [mx, my] = d3.pointer(evt);
+                d3.select("#tooltip_id")
+                .style("left", (evt.pageX + 30) + "px") 
+                .style("top", (evt.pageY) + "px")
+                .style("visibility", "visible")
+                .html(`<p align="center"> <b> Relative Mean Salary in ${d.work_year} <br></br>is ${(d.mean_salary/starter_val_SE).toFixed(4)}</b></p>`);
+            })
+            .on("mouseout", function(){return tooltip2.style("visibility", "hidden");});
         }
     // ==================================================================================
     // ============================== LEGENDS SETTINGS ==================================
@@ -741,7 +732,7 @@ async function init() {
               .attr("x", 200)
               .attr("y", 90)
               .attr("opacity",1)
-              .text("Relative Mean Salary Change");
+              .text("Relative Mean Salary");
     
 
     // ===============================================================================================================

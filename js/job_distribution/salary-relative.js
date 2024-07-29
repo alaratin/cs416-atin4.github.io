@@ -340,7 +340,7 @@ async function init() {
                 radius: 10,
                 raiduspadding: 5,
             },
-            dy: 50,
+            dy: 30,
             dx: -10,
             color: label_color_2
         }
