@@ -134,6 +134,26 @@ async function init() {
         }
     ];
 
+    const annotations = [{
+        note: {
+          label: "Lowest Mean Salary Period",
+          title: "For All"
+        },
+        //can use x, y directly instead of data
+        type:d3.annotationCalloutRect,
+        // data: { date: "18-Sep-09", close: 185.02 },
+        x: xs('2021'),
+        y: ys(1),
+        dy: -137,
+        dx:-50,
+        subject: {
+          width: 10,
+          height: 100
+        }
+      }]
+    const makeAnnotations = d3.annotation()
+            .annotations(annotations);
+
     const makeAnnotations_EN = d3.annotation()
             .annotations(annotations_EN);
     
@@ -161,7 +181,11 @@ async function init() {
         .attr('stroke-width', 3)        
         .attr('d', line);
 
-
+    d3.select('svg')
+    .append("g")
+    .attr("transform", "translate("+margin+","+margin+")")
+        .call(makeAnnotations)
+    
     d3.select('svg')
         .append("g")
         .attr("transform", "translate("+margin+","+margin+")")
