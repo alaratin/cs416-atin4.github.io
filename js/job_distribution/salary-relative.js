@@ -26,7 +26,7 @@ async function init() {
     ([key, values]) => ({
         work_year: key,
         mean_salary: d3.mean(values, d => d.salary_in_usd)
-    }));
+    }));    
     
     const grouped_data_EN =  Array.from(d3.group(data_EN, d => d.work_year),
     ([key, values]) => ({
@@ -283,7 +283,7 @@ async function init() {
               .attr("text-anchor", "end")
               .attr("x", 200)
               .attr("y", 90)
-              .text("Relative Mean Salary Change");
+              .text("Relative Mean Salary");
     // ===============================================================================================================
     // ===============================================================================================================
     // ===============================================================================================================
